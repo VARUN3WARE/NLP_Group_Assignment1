@@ -27,11 +27,11 @@ from editor.pcfg import load_or_train_pcfg
 
 _WORD_RE = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)?")
 
-# Alert type styling: (emoji, color, bg)
+# Alert type styling: (label, color, bg)
 _ALERT_STYLE = {
-    "SEGMENT-ALERT": ("✂️", "#0066CC", "#E6F0FF"),
-    "SPELL-ALERT": ("✏️", "#CC6600", "#FFF3E6"),
-    "GRAMMAR-ALERT": ("⚠️", "#CC0000", "#FFE6E6"),
+    "SEGMENT-ALERT": ("SEGMENT", "#0066CC", "#E6F0FF"),
+    "SPELL-ALERT": ("SPELL", "#CC6600", "#FFF3E6"),
+    "GRAMMAR-ALERT": ("GRAMMAR", "#CC0000", "#FFE6E6"),
 }
 
 
@@ -120,7 +120,7 @@ def run_on_tokens(
 
 
 def _render_alerts(alerts: list, max_display: int = 80):
-    """Render alerts as colored badges instead of plain code block."""
+    """Render alerts as colored cards instead of plain code block."""
     if not alerts:
         st.info("No alerts — text looks clean!")
         return
@@ -131,15 +131,14 @@ def _render_alerts(alerts: list, max_display: int = 80):
 
     # Summary badges
     badge_cols = st.columns(len(_ALERT_STYLE))
-    for col, (kind, (emoji, color, bg)) in zip(badge_cols, _ALERT_STYLE.items()):
+    for col, (kind, (label, color, bg)) in zip(badge_cols, _ALERT_STYLE.items()):
         count = counts.get(kind, 0)
         with col:
             st.markdown(
                 f"""<div style="background:{bg};border-left:4px solid {color};
                 border-radius:6px;padding:10px 14px;margin-bottom:8px;">
-                <span style="font-size:20px;">{emoji}</span>
                 <span style="font-size:22px;font-weight:bold;color:{color};">{count}</span>
-                <span style="font-size:12px;color:#666;margin-left:6px;">{kind.replace('-ALERT','')}</span>
+                <span style="font-size:12px;color:#666;margin-left:6px;">{label}</span>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -147,11 +146,11 @@ def _render_alerts(alerts: list, max_display: int = 80):
     # Individual alert cards
     st.markdown('<div style="max-height:400px;overflow-y:auto;">', unsafe_allow_html=True)
     for a in alerts[:max_display]:
-        emoji, color, bg = _ALERT_STYLE.get(a.kind, ("📌", "#666", "#F5F5F5"))
+        label, color, bg = _ALERT_STYLE.get(a.kind, ("OTHER", "#666", "#F5F5F5"))
         st.markdown(
             f"""<div style="background:{bg};border-left:3px solid {color};
             border-radius:4px;padding:8px 12px;margin-bottom:6px;font-size:13px;">
-            <strong style="color:{color};">{emoji} {a.kind.replace('-ALERT','')}</strong>
+            <strong style="color:{color};">{label}</strong>
             &nbsp; {a.message}</div>""",
             unsafe_allow_html=True,
         )
@@ -218,27 +217,23 @@ def _render_analysis_table(rows):
 def main():
     st.set_page_config(
         page_title="Q4 Live Editor",
-        page_icon="✍️",
         layout="wide",
     )
 
     # --- Header ---
     st.markdown(
-        """<div style="display:flex;align-items:center;gap:12px;margin-bottom:0;">
-        <span style="font-size:32px;">✍️</span>
-        <div>
+        """<div style="margin-bottom:0;">
         <h1 style="margin:0;font-size:26px;">Live Segmentation, Spelling & Grammar Editor</h1>
         <p style="margin:2px 0 0 0;color:#888;font-size:13px;">
-        Q1 joint decoder &nbsp;→&nbsp; Q3 Method-B corrector &nbsp;→&nbsp;
-        Q4 n-grams + PCFG</p>
-        </div></div>""",
+        Q1 joint decoder &nbsp;&rarr;&nbsp; Q3 Method-B corrector &nbsp;&rarr;&nbsp;
+        Q4 n-grams + PCFG</p></div>""",
         unsafe_allow_html=True,
     )
     st.divider()
 
     # --- Sidebar ---
     with st.sidebar:
-        st.markdown("### ⚙️ Configuration")
+        st.markdown("### Configuration")
         p = st.slider("Merge probability `p`", 0.0, 0.3, float(DEFAULT_CONFIG.merge_probability), 0.01)
         n = st.slider("Grammar trigger `N`", 2, 12, int(DEFAULT_CONFIG.grammar_trigger_n))
         z_thresh = st.slider(
@@ -253,7 +248,7 @@ def main():
         seed = st.number_input("Seed (0 = random)", min_value=0, value=0, step=1)
 
         st.markdown("---")
-        mode = st.radio("**Mode**", ["📊 Simulate passage", "⌨️ Live typing"], label_before=True)
+        mode = st.radio("**Mode**", ["Simulate passage", "Live typing"])
 
         st.markdown("---")
         st.caption("Built on Q1 (segmentation/POS) + Q3 (spelling) + Q4 (n-grams/PCFG)")
@@ -267,11 +262,11 @@ def main():
     bi, tri, pcfg, checker = load_stack()
     checker.config = cfg
 
-    if mode.startswith("📊"):
+    if mode == "Simulate passage":
         # --- Simulate passage mode ---
         col_btn, col_info = st.columns([1, 3])
         with col_btn:
-            run_btn = st.button("▶ Run simulation", type="primary", use_container_width=True)
+            run_btn = st.button("Run simulation", type="primary", use_container_width=True)
 
         if run_btn:
             t0 = time.perf_counter()
@@ -281,7 +276,7 @@ def main():
             st.markdown(
                 f"""<div style="background:#E8F5E9;border-radius:8px;padding:10px 16px;
                 margin-bottom:12px;">
-                <strong>📖 Source:</strong> <code>{passage.file_id}</code>
+                <strong>Source:</strong> <code>{passage.file_id}</code>
                 &nbsp;|&nbsp; {len(passage.sentences)} sentences
                 &nbsp;|&nbsp; {len(passage.tokens)} tokens</div>""",
                 unsafe_allow_html=True,
@@ -299,21 +294,21 @@ def main():
             total_ms = (time.perf_counter() - t0) * 1000
 
             # Alerts section
-            st.markdown("### 🔔 Alerts")
+            st.markdown("### Alerts")
             _render_alerts(live.alerts)
 
             # Corrected text
-            st.markdown("### ✅ Corrected text")
+            st.markdown("### Corrected text")
             _render_corrected_text(live.corrected_words)
 
             # Metrics
-            st.markdown("### ⏱️ Performance")
+            st.markdown("### Performance")
             _render_metrics(live.avg_token_latency_ms, live.avg_trigger_latency_ms, total_ms)
 
             # End-of-passage analysis
             try:
                 rows = analyse_passage(passage, live, bi, tri, pcfg, cfg)
-                st.markdown("### 📋 End-of-passage analysis")
+                st.markdown("### End-of-passage analysis")
                 with st.expander("Text table", expanded=False):
                     st.code(format_table(rows))
                 _render_analysis_table(rows)
@@ -322,12 +317,11 @@ def main():
 
     else:
         # --- Live typing mode ---
-        st.markdown("### ⌨️ Live typing")
+        st.markdown("### Live typing")
         st.info(
             "Only **completed** words (after a space or punctuation) are checked. "
             "The word you are still typing is ignored until you finish it. "
-            "Click **Analyze passage** for the PCFG / n-gram table.",
-            icon="💡",
+            "Click **Analyze passage** for the PCFG / n-gram table."
         )
         text = st.text_area(
             "Type here",
@@ -339,7 +333,7 @@ def main():
 
         committed, partial = split_committed_and_partial(text)
         if partial:
-            st.caption(f"✏️ Still typing: `{partial}` (not checked yet)")
+            st.caption(f"Still typing: `{partial}` (not checked yet)")
 
         if committed:
             tokens = [
@@ -350,13 +344,13 @@ def main():
                 live = run_on_tokens(checker, tokens, cfg, show_progress=False)
                 log_lines = st.session_state.get("_last_alert_log", [])
 
-                st.markdown("### 🔔 Live alerts")
+                st.markdown("### Live alerts")
                 _render_alerts(live.alerts, max_display=30)
 
-                st.markdown("### ✅ Corrected (committed)")
+                st.markdown("### Corrected (committed)")
                 _render_corrected_text(live.corrected_words)
 
-                st.markdown("### ⏱️ Performance")
+                st.markdown("### Performance")
                 _render_metrics(live.avg_token_latency_ms, live.avg_trigger_latency_ms)
 
                 st.session_state["live_result"] = live
@@ -365,7 +359,7 @@ def main():
                 st.error(f"Live check failed: {exc}")
 
         st.markdown("---")
-        if st.button("🔍 Analyze passage", type="primary"):
+        if st.button("Analyze passage", type="primary"):
             live = st.session_state.get("live_result")
             committed = st.session_state.get("live_committed") or committed
             if not live or not committed:
@@ -384,7 +378,7 @@ def main():
                     r.sentence_index = 0
                 try:
                     rows = analyse_passage(passage, live, bi, tri, pcfg, cfg)
-                    st.markdown("### 📋 Sentence analysis")
+                    st.markdown("### Sentence analysis")
                     with st.expander("Text table", expanded=False):
                         st.code(format_table(rows))
                     _render_analysis_table(rows)
