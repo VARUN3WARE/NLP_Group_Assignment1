@@ -136,9 +136,9 @@ def _render_alerts(alerts: list, max_display: int = 80):
         with col:
             st.markdown(
                 f"""<div style="background:{bg};border-left:4px solid {color};
-                border-radius:6px;padding:10px 14px;margin-bottom:8px;">
+                border-radius:6px;padding:10px 14px;margin-bottom:8px;color:#222;">
                 <span style="font-size:22px;font-weight:bold;color:{color};">{count}</span>
-                <span style="font-size:12px;color:#666;margin-left:6px;">{label}</span>
+                <span style="font-size:12px;color:#555;margin-left:6px;">{label}</span>
                 </div>""",
                 unsafe_allow_html=True,
             )
@@ -149,9 +149,9 @@ def _render_alerts(alerts: list, max_display: int = 80):
         label, color, bg = _ALERT_STYLE.get(a.kind, ("OTHER", "#666", "#F5F5F5"))
         st.markdown(
             f"""<div style="background:{bg};border-left:3px solid {color};
-            border-radius:4px;padding:8px 12px;margin-bottom:6px;font-size:13px;">
+            border-radius:4px;padding:8px 12px;margin-bottom:6px;font-size:13px;color:#222;">
             <strong style="color:{color};">{label}</strong>
-            &nbsp; {a.message}</div>""",
+            &nbsp; <span style="color:#333;">{a.message}</span></div>""",
             unsafe_allow_html=True,
         )
     if len(alerts) > max_display:
@@ -176,7 +176,7 @@ def _render_corrected_text(corrected_words: list[str]):
     text = " ".join(corrected_words)
     st.markdown(
         f"""<div style="background:#F8F9FA;border:1px solid #E0E0E0;border-radius:8px;
-        padding:16px;font-size:15px;line-height:1.6;">
+        padding:16px;font-size:15px;line-height:1.6;color:#222;">
         {text}</div>""",
         unsafe_allow_html=True,
     )
@@ -275,7 +275,7 @@ def main():
             # Source info banner
             st.markdown(
                 f"""<div style="background:#E8F5E9;border-radius:8px;padding:10px 16px;
-                margin-bottom:12px;">
+                margin-bottom:12px;color:#222;">
                 <strong>Source:</strong> <code>{passage.file_id}</code>
                 &nbsp;|&nbsp; {len(passage.sentences)} sentences
                 &nbsp;|&nbsp; {len(passage.tokens)} tokens</div>""",
