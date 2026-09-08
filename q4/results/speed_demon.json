@@ -1,0 +1,9 @@
+{
+  "n_words": 1000,
+  "seg_spell_total_s": 0.36946354099995915,
+  "seg_spell_per_word_ms": 0.36946354099995915,
+  "grammar_total_s": 0.019290921999981947,
+  "grammar_per_word_ms": 0.019290921999981947,
+  "seg_spell_overhead_ms": 0.3501726189999772,
+  "conclusion": "Segmentation+spelling costs 0.369 ms/word vs 0.019 ms/word for grammar-trigger checks (overhead 0.350 ms/word). Live per-token seg+spell is cheap enough to keep enabled."
+}

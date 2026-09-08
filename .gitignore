@@ -21,6 +21,7 @@ __pycache__/
 # Large / local data (clone separately)
 q1/data/
 q1/artifacts/*.pkl
+q4/artifacts/*.pkl
 **/UD_Spanish-GSD/
 **/UD_German-GSD/
 **/UD_English-EWT/
@@ -28,3 +29,4 @@ q1/artifacts/*.pkl
 # Optional local caches
 .firecrawl/
 *.log
+.nltk_data/

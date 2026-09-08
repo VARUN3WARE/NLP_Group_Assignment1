@@ -7,17 +7,26 @@ Integrated group repository for Questions 1–4.
 | Q1 — Word segmentation + POS tagging | [`q1/`](q1/) | Complete (English + Spanish) |
 | Q2 — Transition-based dependency parser | `q2/` | In progress (separate) |
 | Q3 — Spelling corrector | [`q3/`](q3/) | Complete |
-| Q4 — Live background editor (Streamlit) | `q4/` | Next |
+| Q4 — Live background editor (Streamlit) | [`q4/`](q4/) | Complete |
 
 Assignment brief: [`docs/Group_Assignment_1.pdf`](docs/Group_Assignment_1.pdf)
 
 ## Quick start
 
 ```bash
-python -m venv .venv
+cd Group_Assignment_1
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python -c "import nltk; nltk.download('brown'); nltk.download('treebank'); nltk.download('punkt')"
+# NLTK data lives in ~/nltk_data (private path)
+python -c "import nltk; [nltk.download(p) for p in ('brown','treebank','punkt','gutenberg','reuters')]"
+```
+
+Use this project's `.venv` for all commands from here on:
+
+```bash
+source .venv/bin/activate
+# or call directly: .venv/bin/python ...
 ```
 
 ### Question 1
@@ -39,6 +48,16 @@ python main.py all --skip-train
 python main.py app             # interactive CLI
 ```
 
+### Question 4
+
+```bash
+cd q4
+python main.py train-lms              # Q4 bigram/trigram + PCFG cache
+python main.py analyze --seed 42      # sample run + results JSON
+python main.py bench                  # 1000-word Speed Demon
+streamlit run app.py                  # live UI
+```
+
 ## Layout
 
 ```text
@@ -58,7 +77,11 @@ python main.py app             # interactive CLI
 │   ├── tests/
 │   ├── artifacts/       # brown_lm.pkl
 │   └── results/
-└── q4/                  # coming next — reuses q1 + q3
+├── q4/
+│   ├── main.py / app.py
+│   ├── editor/          # live checker, ngrams, pcfg, analysis
+│   ├── artifacts/
+│   └── results/
 ```
 
 ## Cross-question reuse (for Q4)

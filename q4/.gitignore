@@ -1,0 +1,9 @@
+# Local caches / envs
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Large generated pickles can be regenerated with: python main.py train-lms
+# Keep them locally; optional to commit.

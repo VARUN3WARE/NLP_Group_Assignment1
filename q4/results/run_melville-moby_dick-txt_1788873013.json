@@ -1,0 +1,96 @@
+{
+  "file_id": "melville-moby_dick.txt",
+  "seed": 99,
+  "p": 0.08,
+  "N": 5,
+  "avg_token_latency_ms": 0.12538879185559296,
+  "avg_trigger_latency_ms": 0.06403766667770266,
+  "n_alerts": 45,
+  "alert_kinds": {
+    "SEGMENT-ALERT": 9,
+    "SPELL-ALERT": 6,
+    "GRAMMAR-ALERT": 30
+  },
+  "sentences": [
+    {
+      "text": "for in their succourless empty handedness they in the heathenish shared waters and by the beaches of un recorded javelin islands battle with virgin wonders and terrorsthat cook with all his marines and muskets would not willingly have dared",
+      "pcfg": "unparseable",
+      "bigram_lp": -374.3002164830297,
+      "trigram_lp": -405.9452647469689,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 2,
+      "spell_fixes": 2
+    },
+    {
+      "text": "all that is made such a flourish of in the old south sea voyages those things were but the life time commonplaces of our heroic nantucketers",
+      "pcfg": "unparseable",
+      "bigram_lp": -194.2101480373865,
+      "trigram_lp": -244.95813330134914,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 0,
+      "spell_fixes": 0
+    },
+    {
+      "text": "often adventures which vancouverdedicates three chapters to these men accounted unworthy of being set down in the ship's common log",
+      "pcfg": "unparseable",
+      "bigram_lp": -185.61020854460756,
+      "trigram_lp": -207.93281974306322,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 1,
+      "spell_fixes": 0
+    },
+    {
+      "text": "until the while fishery rounded capehorn no commerce but colonial scarcely any intercourse but colonial was carried on between europe and the long line of the opulent spanish provinces on the pacific coast",
+      "pcfg": "unparseable",
+      "bigram_lp": -279.0797215760776,
+      "trigram_lp": -337.0066255976034,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 2,
+      "spell_fixes": 1
+    },
+    {
+      "text": "it was the whaleman who first broke through the jealous policy of the spanish crown touching those colonies and if space permitted it might be distinctlyshown how from those whalemen at last eventuate the liberation of peru chili and bolivia from the yoke of old spain and the establishment of the eternal democracy in those parts",
+      "pcfg": "unparseable",
+      "bigram_lp": -450.55779630948945,
+      "trigram_lp": -531.4670261983493,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 3,
+      "spell_fixes": 1
+    },
+    {
+      "text": "that great america on the other side of the sphereaustralia was given to the enlightened world by the whaleman",
+      "pcfg": "unparseable",
+      "bigram_lp": -141.79363785714662,
+      "trigram_lp": -170.88181258321606,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 3,
+      "spell_fixes": 0
+    },
+    {
+      "text": "after its first blunder born discovery by a dutchman all other ships long shunned those shores as pestiferously barbarous but the while ship touched there",
+      "pcfg": "unparseable",
+      "bigram_lp": -243.76099563206023,
+      "trigram_lp": -269.0434841639881,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 0,
+      "spell_fixes": 1
+    },
+    {
+      "text": "the while ship is the true mother of that now mighty colony",
+      "pcfg": "logP=-88.52*",
+      "bigram_lp": -93.79517015254358,
+      "trigram_lp": -134.29856492782923,
+      "method": "pcfg",
+      "verdict": "grammatical",
+      "seg_merges": 2,
+      "spell_fixes": 1
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "file_id": "carroll-alice.txt",
+  "seed": 3,
+  "p": 0.08,
+  "N": 5,
+  "avg_token_latency_ms": 0.07105621951294283,
+  "avg_trigger_latency_ms": 0.06679984001493722,
+  "n_alerts": 41,
+  "alert_kinds": {
+    "SEGMENT-ALERT": 17,
+    "SPELL-ALERT": 1,
+    "GRAMMAR-ALERT": 23
+  },
+  "sentences": [
+    {
+      "text": "please would you tell me said alice a little timidly for she was not quite sure whether it was good manners for her to speak first why your cat grins like that it's a cheshire cat said the duchess and that's why",
+      "pcfg": "unparseable",
+      "bigram_lp": -329.6032708382829,
+      "trigram_lp": -403.53317331934414,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 3,
+      "spell_fixes": 0
+    },
+    {
+      "text": "pig she said the last word with such sudden violence that alicequite jumped but she saw in another moment that it was addressed to the baby and not to her so she tookcourage and went on again i didn't know that cheshire cats always grinned in fact i didn't know that cats could grin they all can said the duchess and most of em do i don't know of any that do alice said very politely feeling quite pleased to have got into a conversation",
+      "pcfg": "unparseable",
+      "bigram_lp": -633.077628662143,
+      "trigram_lp": -810.3196155223574,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 5,
+      "spell_fixes": 0
+    },
+    {
+      "text": "you don't know much said the duchess and that's a fact alice did not at all like the tone of this remark and thought it would be as well to introduce some other subject of conversation",
+      "pcfg": "unparseable",
+      "bigram_lp": -234.6117915750069,
+      "trigram_lp": -301.77871508180664,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 1,
+      "spell_fixes": 0
+    },
+    {
+      "text": "while she was trying to fix on one the cook took the cauldron of soup off the fire and at once set to work throwing everything within her reach at the duchess and the baby the fire irons came first then followed a shower of saucepan plates and dishes",
+      "pcfg": "unparseable",
+      "bigram_lp": -388.6609202074544,
+      "trigram_lp": -491.8965565212605,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 4,
+      "spell_fixes": 1
+    },
+    {
+      "text": "the duchess took no notice of them even when they hit her and the baby was howling so much already that it was quite impossible to say whether the blows hurt it or not",
+      "pcfg": "unparseable",
+      "bigram_lp": -252.54134054352366,
+      "trigram_lp": -324.88917581230606,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 5,
+      "spell_fixes": 0
+    },
+    {
+      "text": "oh please mind what you're doing cried alice jumping up and down in an agony of terror",
+      "pcfg": "unparseable",
+      "bigram_lp": -129.30400072624064,
+      "trigram_lp": -155.62592352198718,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 1,
+      "spell_fixes": 0
+    }
+  ]
+}
