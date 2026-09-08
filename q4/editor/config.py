@@ -15,7 +15,8 @@ class EditorConfig:
 
     # Q4-owned grammar LMs (separate from Q1/Q3 artifacts)
     add_k: float = 0.01
-    grammar_perplexity_threshold: float = 5000.0
+    grammar_z_threshold: float = 2.5  # robust z-score (MAD-based) for grammar alerts
+    grammar_warmup_windows: int = 3   # min windows seen before z-score alerts fire
     real_word_threshold: float = 5.0
 
     # Decision rule (Part 4)
