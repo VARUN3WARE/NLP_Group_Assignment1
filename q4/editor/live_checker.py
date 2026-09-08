@@ -14,7 +14,7 @@ from editor.passage import PassageToken, SampledPassage
 
 # Short function words allowed as split pieces.
 _SHORT_OK = frozenset(
-    "a i to of in on at as is be he me my we us or an so no do if it up by".split()
+    "a i to of in on at as is be he me my we us or an so no do go if it up by".split()
 )
 
 
@@ -149,14 +149,26 @@ def _robust_z_score(pp: float, history: list[float]) -> float:
     return (pp - med) / sigma
 
 
+_SUFFIXES = ("er", "ing", "ed", "ly", "est", "ers", "est")
+
+
+def _ends_in_suffix(word: str) -> str | None:
+    """Return the matched English suffix, or None."""
+    for suf in _SUFFIXES:
+        if len(word) > len(suf) + 2 and word.endswith(suf):
+            return suf
+    return None
+
+
 def _safe_spell_suggestion(original: str, suggestion: str, vocab) -> bool:
     """Filter clearly harmful unigram spell replacements."""
     if not suggestion or suggestion == original:
         return False
     if suggestion not in vocab:
         return False
-    # Never auto-fix very short tokens (mr→or, ha→a, …).
-    if len(original) < 4:
+    # Never auto-fix very short tokens (mr→or, ha→a, trills→trials, sluing→slung).
+    # Require length >= 6 so rare but valid literary words (5-6 chars) are left alone.
+    if len(original) < 6:
         return False
     # Keep length close (edit-distance-1 already, but guard insertions/deletions).
     if abs(len(suggestion) - len(original)) > 1:
@@ -164,8 +176,12 @@ def _safe_spell_suggestion(original: str, suggestion: str, vocab) -> bool:
     # Prefer keeping first character for nouns/content words (crab≠grab).
     if original[0] != suggestion[0]:
         return False
-    # Same-length single-letter swaps need a real shared stem (snout≠shout).
-    if len(original) == len(suggestion) and _common_prefix_len(original, suggestion) < 2:
+    # Same-length swaps need a real shared stem (trills≠trials: prefix "tri"=3).
+    if len(original) == len(suggestion) and _common_prefix_len(original, suggestion) < 4:
+        return False
+    # Protect words ending in a common English suffix (caresser→caresses, sluing→slung).
+    orig_suf = _ends_in_suffix(original)
+    if orig_suf is not None and not suggestion.endswith(orig_suf):
         return False
     return True
 
@@ -339,8 +355,8 @@ class LiveChecker:
                 fixed, gain = self.corrector.correct_real_word(
                     word, prev=prev, nxt=EOS, method="B"
                 )
-                # Stronger margin for live/editor use to avoid crab/grab cascades.
-                margin = max(self.config.real_word_threshold, 6.0)
+                # Stronger margin for live/editor use to avoid leafy→leaf, leads→lead, pert→part.
+                margin = max(self.config.real_word_threshold, 18.0)
                 if fixed != word and gain >= margin and fixed[0] == word[0]:
                     alerts.append(
                         Alert(
