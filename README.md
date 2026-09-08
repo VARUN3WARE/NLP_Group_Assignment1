@@ -50,7 +50,6 @@ python main.py app             # interactive CLI
 ├── q1/
 │   ├── main.py
 │   ├── segpos/          # package (data, lm, segmentation, tagging, eval)
-│   ├── scripts/
 │   ├── artifacts/       # pickled English pipeline
 │   └── data/            # UD corpora (local)
 ├── q3/                  # spelling corrector + CLI
