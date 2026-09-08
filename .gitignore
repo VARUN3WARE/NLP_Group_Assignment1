@@ -1,0 +1,29 @@
+# Virtual environments
+.venv/
+venv/
+.env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Large / local data (clone separately)
+q1/data/
+**/UD_Spanish-GSD/
+**/UD_German-GSD/
+**/UD_English-EWT/
+
+# Optional local caches
+.firecrawl/
+*.log
