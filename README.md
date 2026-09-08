@@ -34,7 +34,7 @@ python main.py evaluate        # full metrics (slow)
 
 ```bash
 cd q3
-python main.py train           # builds models/brown_lm.pkl
+python main.py train           # -> artifacts/brown_lm.pkl
 python main.py all --skip-train
 python main.py app             # interactive CLI
 ```
@@ -52,7 +52,12 @@ python main.py app             # interactive CLI
 │   ├── segpos/          # package (data, lm, segmentation, tagging, eval)
 │   ├── artifacts/       # pickled English pipeline
 │   └── data/            # UD corpora (local)
-├── q3/                  # spelling corrector + CLI
+├── q3/
+│   ├── main.py
+│   ├── spelling/        # package (lm, candidates, corrector, evaluation)
+│   ├── tests/
+│   ├── artifacts/       # brown_lm.pkl
+│   └── results/
 └── q4/                  # coming next — reuses q1 + q3
 ```
 
@@ -71,7 +76,9 @@ pipe.decode("thequickbrownfox")         # joint beam → [(word, tag), ...]
 **From Q3:**
 
 ```python
+from q1_paths import ensure_q3_on_path
+ensure_q3_on_path()
 from spelling import load_models
-model, corrector = load_models()        # loads models/brown_lm.pkl
+model, corrector = load_models()        # loads artifacts/brown_lm.pkl
 corrector.correct_text("a test sentnce.")
 ```

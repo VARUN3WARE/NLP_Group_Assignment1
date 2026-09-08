@@ -11,8 +11,8 @@
     "distinct_bigrams": 385197,
     "symspell_keys": 313857,
     "symspell_postings": 348252,
-    "symspell_build_seconds": 0.391,
-    "lm_train_seconds": 1.593,
+    "symspell_build_seconds": 0.387,
+    "lm_train_seconds": 0.845,
     "model_file_mb": 7.98,
     "top_unigrams": [
       [

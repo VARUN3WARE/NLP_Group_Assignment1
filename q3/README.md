@@ -1,84 +1,62 @@
 # Question 3 — Building, Benchmarking and Deploying an Efficient Spelling Corrector
 
-An edit-distance-1 spelling corrector trained on the NLTK Brown corpus, with two
-independent candidate-generation algorithms, a benchmark that pits them against
-each other, and an interactive terminal application.
+Edit-distance-1 spelling corrector on the NLTK Brown corpus, with Method A / Method B
+candidate generation, Speed Demon benchmark, and an interactive terminal app.
 
 ## Layout
 
-Three Python files.
-
-```
+```text
 q3/
-├── spelling.py         the library — everything the corrector needs
-│                         Part 1  LanguageModel            vocabulary, unigram, bigram
-│                         Part 2  EditDistance1Generator   Method A
-│                                 SymmetricDeleteIndex     Method B (SymSpell)
-│                         Part 3  SpellingCorrector        non-word + real-word
-│                         Part 4  build_test_sets, evaluate, speed_demon
-├── main.py             the drivers, one subcommand per part
-├── test_spelling.py    unit tests
-├── models/             brown_lm.pkl, test_split.pkl   (generated)
-├── results/            results.json, full_run.txt      (generated)
-└── REPORT.md           the write-up, with all the numbers
+├── main.py                 CLI (train / eval / bench / demo / app)
+├── __init__.py
+├── spelling/               library package
+│   ├── paths.py
+│   ├── tokenize.py
+│   ├── language_model.py   vocab + unigram + bigram
+│   ├── candidates.py       Method A + Method B (SymSpell)
+│   ├── corrector.py        non-word / real-word + load_models
+│   └── evaluation.py       test sets, accuracy, speed demon
+├── tests/test_spelling.py
+├── artifacts/              brown_lm.pkl (trained models)
+├── results/                results.json
+└── REPORT.md
 ```
 
-## Running it
-
-`nltk` is needed **only** to train. Once `models/brown_lm.pkl` exists, everything
-else runs on the standard library alone.
+## Commands
 
 ```bash
-python main.py train          # ~5 s   Part 1  train and pickle the models
-python main.py eval --full    # ~45 s  Part 4  accuracy on both test sets
-python main.py bench          # ~2 s   Part 4  the 1,000-word Speed Demon benchmark
-python main.py demo           #        Part 5  output examples, non-interactively
-python main.py app            #        Part 5  the live interactive application
-python main.py all            # ~50 s  train + eval + bench + demo
-python -m pytest -q           # ~2 s   the test suite
+cd q3
+python main.py train          # ~5 s
+python main.py eval --full    # accuracy
+python main.py bench          # Speed Demon
+python main.py demo
+python main.py app
+python main.py all --skip-train
+python -m pytest -q
 ```
 
-`python main.py <command> --help` lists that command's options. The Brown corpus
-is fetched once with `nltk.download("brown")`.
+`nltk` is only needed for `train`. After `artifacts/brown_lm.pkl` exists, the rest runs without it.
 
-Run commands from inside `q3/` so local imports resolve cleanly.
+## Reuse from Question 4
 
-### Interactive application
+```python
+from q1_paths import ensure_q3_on_path
+ensure_q3_on_path()
+from spelling import load_models
 
+model, corrector = load_models()
+corrector.correct_text("This is a test sentnce.")
+corrector.method_b.candidates("sentnce")
 ```
-$ python main.py app
-you > This is a test sentnce.
-fix > This is a test sentence.
-      non-word   sentnce -> sentence
-      latency 0.24 ms
-you > exit
-```
-
-Changed words are highlighted in colour — green for a non-word fix, yellow for a
-context-driven real-word fix — falling back to `**asterisks**` with `--plain` or
-when stdout is not a terminal. Runtime commands: `:help`, `:realword`,
-`:method A|B|both`, `:threshold X`, `:stats`.
 
 ## Headline results
 
 | | |
 |---|---|
-| Vocabulary | 40,542 types over 901,816 training tokens |
-| Non-word correction accuracy | **91.96 %** (5,620 held-out cases) |
-| Real-word correction accuracy | **61.37 %** (same 5,620 sentences) |
-| Method B vs Method A | **13.6× faster** per word, byte-identical output |
-| Interactive latency | ~0.4 ms per sentence |
+| Vocabulary | 40,542 types |
+| Non-word accuracy | **91.96 %** |
+| Real-word accuracy | **61.37 %** |
+| Method B vs A | **13.6× faster**, identical candidates |
+| Interactive latency | ~0.4 ms / sentence |
 
-Full analysis, including the accuracy/false-alarm trade-off and the failure
-modes, is in [REPORT.md](REPORT.md).
-
-## Reuse from Question 4
-
-```python
-from spelling import load_models
-
-model, corrector = load_models()          # loads models/brown_lm.pkl, no retraining
-corrector.correct_text("This is a test sentnce.")
-model.log_bigram_prob("to", "see")        # add-k smoothed
-corrector.method_b.candidates("sentnce")  # Method B directly
-```
+Full write-up: [REPORT.md](REPORT.md).

@@ -1,5 +1,9 @@
 .venv/
 __pycache__/
+**/__pycache__/
 *.pyc
 .pytest_cache/
 .DS_Store
+
+# Optional local regenerations (committed artifacts/results kept by default)
+# artifacts/*.pkl

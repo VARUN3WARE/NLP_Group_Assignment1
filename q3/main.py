@@ -720,7 +720,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = add("all", cmd_all, "train + eval + bench + demo")
     p.add_argument("--skip-train", action="store_true",
-                   help="reuse the existing models/brown_lm.pkl")
+                   help="reuse the existing artifacts/brown_lm.pkl")
     p.add_argument("--quick", dest="quick", action="store_true",
                    help="evaluate on 1000 cases per set instead of all of them")
     p.set_defaults(k=0.01, test_ratio=0.10, seed=42, max_cases=1000, full=True,
