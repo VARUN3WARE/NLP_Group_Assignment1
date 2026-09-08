@@ -1,0 +1,10 @@
+# Local corpora (clone separately)
+data/
+UD_Spanish-GSD/
+
+# Trained English bundle (regenerate with: python main.py train-english)
+models/
+
+__pycache__/
+*.pyc
+.DS_Store
