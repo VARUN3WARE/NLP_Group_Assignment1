@@ -24,9 +24,9 @@ python -c "import nltk; nltk.download('brown'); nltk.download('treebank'); nltk.
 
 ```bash
 cd q1
-# Place UD Spanish-GSD under data/spanish/UD_Spanish-GSD/ (see q1/README.md)
-python main.py train-english   # pickle English models for Q4 reuse
-python main.py sample          # demo strings
+# Optional: clone UD Spanish-GSD into data/spanish/UD_Spanish-GSD/
+python main.py train-english   # -> artifacts/english_pipeline.pkl
+python main.py sample
 python main.py evaluate        # full metrics (slow)
 ```
 
@@ -47,9 +47,14 @@ python main.py app             # interactive CLI
 ├── requirements.txt
 ├── docs/
 │   └── Group_Assignment_1.pdf
-├── q1/          # segmentation + POS (EN / ES)
-├── q3/          # spelling corrector + CLI
-└── q4/          # coming next — reuses q1 + q3
+├── q1/
+│   ├── main.py
+│   ├── segpos/          # package (data, lm, segmentation, tagging, eval)
+│   ├── scripts/
+│   ├── artifacts/       # pickled English pipeline
+│   └── data/            # UD corpora (local)
+├── q3/                  # spelling corrector + CLI
+└── q4/                  # coming next — reuses q1 + q3
 ```
 
 ## Cross-question reuse (for Q4)
@@ -57,7 +62,8 @@ python main.py app             # interactive CLI
 **From Q1 (English only):**
 
 ```python
-from q1.pipeline import load_english_pipeline
+# from inside q1/, or with PYTHONPATH=q1
+from segpos import load_english_pipeline
 pipe = load_english_pipeline()          # no retrain
 pipe.decode("thequickbrownfox")         # joint beam → [(word, tag), ...]
 ```

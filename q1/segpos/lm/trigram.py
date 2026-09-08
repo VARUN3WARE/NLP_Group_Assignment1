@@ -74,16 +74,3 @@ class TrigramLanguageModel:
             f"TrigramLanguageModel(vocab={len(self.vocabulary):,}, "
             f"tokens={self.total_words:,})"
         )
-
-
-if __name__ == "__main__":
-    from corpus import load_brown, split_brown
-
-    sentences = load_brown()
-    train_sentences, _ = split_brown(sentences)
-    train_words = [[word for word, _tag in sentence] for sentence in train_sentences]
-
-    model = TrigramLanguageModel()
-    model.train(train_words)
-    print(model)
-    print("score:", model.score_sentence(["the", "quick", "brown", "fox"]))

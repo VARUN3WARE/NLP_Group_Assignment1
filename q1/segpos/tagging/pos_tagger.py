@@ -141,19 +141,3 @@ class MorphologyAwarePOSTagger(TrigramPOSTagger):
             )
         self.train(converted)
         return converted
-
-
-if __name__ == "__main__":
-    from corpus import load_brown, split_brown
-
-    print("Loading Brown corpus...")
-    sentences = load_brown()
-    train_sentences, _ = split_brown(sentences)
-
-    tagger = TrigramPOSTagger()
-    tagger.train(train_sentences)
-
-    test_sentence = ["the", "quick", "brown", "fox"]
-    print("POS tags:")
-    for word, tag in tagger.tag(test_sentence):
-        print(f"  {word} -> {tag}")

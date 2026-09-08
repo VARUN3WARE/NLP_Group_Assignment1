@@ -60,21 +60,3 @@ class ViterbiSegmenter:
 
         words.reverse()
         return words
-
-
-if __name__ == "__main__":
-    from corpus import load_brown, split_brown
-    from language_model import TrigramLanguageModel
-
-    print("Loading Brown corpus...")
-    sentences = load_brown()
-    train_sentences, _ = split_brown(sentences)
-    train_words = [[word for word, _tag in sentence] for sentence in train_sentences]
-
-    lm = TrigramLanguageModel()
-    lm.train(train_words)
-    segmenter = ViterbiSegmenter(lm, max_word_length=20)
-
-    test_string = "thequickbrownfox"
-    print("Input:", test_string)
-    print("Segmentation:", segmenter.segment(test_string))

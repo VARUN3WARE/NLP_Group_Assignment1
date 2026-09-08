@@ -10,17 +10,13 @@ import pickle
 from dataclasses import dataclass
 from pathlib import Path
 
-from corpus import load_brown, split_brown
-from joint_decoder import JointBeamDecoder
-from language_model import TrigramLanguageModel
-from pos_tagger import TrigramPOSTagger
-from segmentation import ViterbiSegmenter
+from segpos.data.corpus import load_brown, split_brown
+from segpos.lm.trigram import TrigramLanguageModel
+from segpos.paths import DEFAULT_BUNDLE_PATH
+from segpos.segmentation.joint_beam import JointBeamDecoder
+from segpos.segmentation.viterbi import ViterbiSegmenter
+from segpos.tagging.pos_tagger import TrigramPOSTagger
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-DEFAULT_MODEL_DIR = PROJECT_ROOT / "models"
-DEFAULT_BUNDLE_PATH = DEFAULT_MODEL_DIR / "english_pipeline.pkl"
-
-# Defaults selected for Q4 live checks (documented in the Q4 report).
 DEFAULT_MAX_WORD_LENGTH = 20
 DEFAULT_ALPHA = 1.0
 DEFAULT_BETA = 1.0
@@ -66,8 +62,7 @@ class EnglishPipeline:
 
     def segment_then_tag(self, text: str):
         """Fallback pipeline: Viterbi segment, then Viterbi tag."""
-        words = self.segment(text)
-        return self.tag(words)
+        return self.tag(self.segment(text))
 
     def save(self, path=DEFAULT_BUNDLE_PATH):
         path = Path(path)

@@ -3,18 +3,18 @@
 Question 1 CLI.
 
     python main.py train-english   train + pickle English models for Q4
-    python main.py sample          demo sample strings (loads or trains English)
-    python main.py evaluate        full evaluation via results.py (slow)
+    python main.py sample          demo sample strings
+    python main.py evaluate        full evaluation (slow; needs Spanish data)
 """
 
 from __future__ import annotations
 
 import argparse
-import sys
 import time
 from pathlib import Path
 
-from pipeline import DEFAULT_BUNDLE_PATH, load_english_pipeline, train_english_pipeline
+from segpos.paths import DEFAULT_BUNDLE_PATH
+from segpos.pipeline import load_english_pipeline, train_english_pipeline
 
 
 def cmd_train_english(args: argparse.Namespace) -> None:
@@ -68,12 +68,11 @@ def cmd_sample(args: argparse.Namespace) -> None:
         print(f"  {text}")
         print(f"  -> {pairs}\n")
 
-    # Spanish samples still use the live modules (no Spanish pickle required for Q4).
     try:
-        from corpus import load_spanish
-        from language_model import TrigramLanguageModel
-        from pos_tagger import MorphologyAwarePOSTagger, TrigramPOSTagger
-        from segmentation import ViterbiSegmenter
+        from segpos.data.corpus import load_spanish
+        from segpos.lm.trigram import TrigramLanguageModel
+        from segpos.segmentation.viterbi import ViterbiSegmenter
+        from segpos.tagging.pos_tagger import MorphologyAwarePOSTagger, TrigramPOSTagger
 
         print("Loading Spanish-GSD for sample demos ...")
         train, _dev, _test = load_spanish()
@@ -86,7 +85,11 @@ def cmd_sample(args: argparse.Namespace) -> None:
         morph = MorphologyAwarePOSTagger()
         morph.train_spanish(train)
 
-        spanish = ["lacasarojaesgrande", "mispadrespuedenviajar", "elcielodespejadoesazul"]
+        spanish = [
+            "lacasarojaesgrande",
+            "mispadrespuedenviajar",
+            "elcielodespejadoesazul",
+        ]
         print("\nSpanish segment + plain POS / morph POS")
         for text in spanish:
             w = seg.segment(text)
@@ -98,15 +101,17 @@ def cmd_sample(args: argparse.Namespace) -> None:
 
 
 def cmd_evaluate(_args: argparse.Namespace) -> None:
-    print("Running full evaluation (results.py) ...")
-    import results  # noqa: F401 — script runs on import
+    from segpos.eval.experiments import run_full_evaluation
 
-    # results.py executes at import time; keep an explicit no-op for clarity.
-    _ = results
+    print("Running full evaluation ...")
+    run_full_evaluation()
 
 
 def build_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = ap.add_subparsers(dest="command", required=True)
 
     def add_decoder_opts(p):

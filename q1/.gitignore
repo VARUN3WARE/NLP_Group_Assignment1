@@ -1,10 +1,12 @@
-# Local corpora (clone separately)
-data/
-UD_Spanish-GSD/
+# Local corpora
+data/spanish/
+data/german/
 
-# Trained English bundle (regenerate with: python main.py train-english)
-models/
+# Trained pickles (regenerate: python main.py train-english)
+artifacts/*.pkl
 
 __pycache__/
+**/__pycache__/
 *.pyc
 .DS_Store
+.pytest_cache/
