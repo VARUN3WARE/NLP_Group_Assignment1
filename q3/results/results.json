@@ -1,0 +1,257 @@
+{
+  "model": {
+    "brown_sentences": 57340,
+    "train_sentences": 51606,
+    "test_sentences": 5734,
+    "test_ratio": 0.1,
+    "seed": 42,
+    "add_k": 0.01,
+    "vocabulary_types": 40542,
+    "training_tokens": 901816,
+    "distinct_bigrams": 385197,
+    "symspell_keys": 313857,
+    "symspell_postings": 348252,
+    "symspell_build_seconds": 0.391,
+    "lm_train_seconds": 1.593,
+    "model_file_mb": 7.98,
+    "top_unigrams": [
+      [
+        "the",
+        63104
+      ],
+      [
+        "of",
+        32761
+      ],
+      [
+        "and",
+        25985
+      ],
+      [
+        "to",
+        23589
+      ],
+      [
+        "a",
+        20999
+      ],
+      [
+        "in",
+        19255
+      ],
+      [
+        "that",
+        9540
+      ],
+      [
+        "is",
+        9141
+      ],
+      [
+        "was",
+        8861
+      ],
+      [
+        "for",
+        8616
+      ]
+    ]
+  },
+  "evaluation": {
+    "non_word_isolated": {
+      "n": 5620,
+      "target_correct": 5168,
+      "sentence_exact": 4532,
+      "untouched": 0,
+      "wrong_correction": 452,
+      "collateral": 680,
+      "elapsed": 1.1794516520003526,
+      "accuracy": 0.9195729537366548
+    },
+    "non_word_full_pipeline": {
+      "n": 5620,
+      "target_correct": 5168,
+      "sentence_exact": 3484,
+      "untouched": 0,
+      "wrong_correction": 452,
+      "collateral": 1810,
+      "elapsed": 13.697982168000635,
+      "accuracy": 0.9195729537366548
+    },
+    "real_word": {
+      "n": 5620,
+      "target_correct": 3449,
+      "sentence_exact": 2372,
+      "untouched": 1694,
+      "wrong_correction": 477,
+      "collateral": 1821,
+      "elapsed": 14.29561917599949,
+      "accuracy": 0.6137010676156583
+    },
+    "real_word_no_context": {
+      "n": 5620,
+      "target_correct": 0,
+      "sentence_exact": 0,
+      "untouched": 5620,
+      "wrong_correction": 0,
+      "collateral": 680,
+      "elapsed": 0.38348139400022774,
+      "accuracy": 0.0
+    },
+    "false_alarms": {
+      "n_sentences": 1000,
+      "n_words": 17686,
+      "real_word_changes": 346,
+      "non_word_changes": 156,
+      "damaged_sentences": 275,
+      "rate_per_word": 0.019563496550944248,
+      "rate_per_sentence": 0.275
+    },
+    "threshold_sweep": [
+      {
+        "threshold": 1,
+        "real_word_accuracy": 0.7430604982206406,
+        "false_alarm_per_word": 0.08741377360624222,
+        "false_alarm_per_sentence": 0.7
+      },
+      {
+        "threshold": 2,
+        "real_word_accuracy": 0.7135231316725978,
+        "false_alarm_per_word": 0.05535451769761393,
+        "false_alarm_per_sentence": 0.552
+      },
+      {
+        "threshold": 3,
+        "real_word_accuracy": 0.6866548042704627,
+        "false_alarm_per_word": 0.039466244487164986,
+        "false_alarm_per_sentence": 0.455
+      },
+      {
+        "threshold": 4,
+        "real_word_accuracy": 0.6553380782918149,
+        "false_alarm_per_word": 0.02815786497794866,
+        "false_alarm_per_sentence": 0.366
+      },
+      {
+        "threshold": 5,
+        "real_word_accuracy": 0.6137010676156583,
+        "false_alarm_per_word": 0.019563496550944248,
+        "false_alarm_per_sentence": 0.275
+      },
+      {
+        "threshold": 6,
+        "real_word_accuracy": 0.5690391459074733,
+        "false_alarm_per_word": 0.013230804025783105,
+        "false_alarm_per_sentence": 0.2
+      },
+      {
+        "threshold": 8,
+        "real_word_accuracy": 0.4685053380782918,
+        "false_alarm_per_word": 0.006106524934976818,
+        "false_alarm_per_sentence": 0.1
+      },
+      {
+        "threshold": 10,
+        "real_word_accuracy": 0.3597864768683274,
+        "false_alarm_per_word": 0.0036186814429492254,
+        "false_alarm_per_sentence": 0.062
+      }
+    ],
+    "scoring_comparison": [
+      {
+        "scoring": "add-k",
+        "unigram_discount": 0.0,
+        "real_word_accuracy": 0.5800711743772242,
+        "false_alarm_per_word": 0.02408684835463078
+      },
+      {
+        "scoring": "interpolated",
+        "unigram_discount": 0.0,
+        "real_word_accuracy": 0.6137010676156583,
+        "false_alarm_per_word": 0.019563496550944248
+      },
+      {
+        "scoring": "interpolated",
+        "unigram_discount": 0.5,
+        "real_word_accuracy": 0.5387900355871886,
+        "false_alarm_per_word": 0.01475743525952731
+      },
+      {
+        "scoring": "interpolated",
+        "unigram_discount": 1.0,
+        "real_word_accuracy": 0.3644128113879004,
+        "false_alarm_per_word": 0.014927060952165555
+      }
+    ],
+    "config": {
+      "threshold": 5.0,
+      "method": "both",
+      "n_non_word": 5620,
+      "n_real_word": 5620,
+      "seed": 7,
+      "full": true
+    }
+  },
+  "speed_demon": {
+    "batch_size": 1000,
+    "mean_word_length": 5.827,
+    "build_seconds": {
+      "method_a": 5.196000529394951e-06,
+      "method_b": 0.4885957199994664
+    },
+    "symspell_keys": 313857,
+    "symspell_postings": 348252,
+    "runs": [
+      {
+        "label": "Method A  (edit-distance-1 generation)",
+        "n_words": 1000,
+        "total_seconds": 0.12032237299990811,
+        "per_word_ms": 0.12032237299990811,
+        "words_per_second": 8311.00629972419,
+        "all_runs": [
+          0.12860332600030233,
+          0.12032237299990811,
+          0.12682812999992166
+        ],
+        "median_seconds": 0.12682812999992166,
+        "candidates_returned": 3166
+      },
+      {
+        "label": "Method B  (symmetric delete + verify)",
+        "n_words": 1000,
+        "total_seconds": 0.01239415999953053,
+        "per_word_ms": 0.01239415999953053,
+        "words_per_second": 80683.160459271,
+        "all_runs": [
+          0.01239415999953053,
+          0.01269538399992598,
+          0.012961389999873063
+        ],
+        "median_seconds": 0.01269538399992598,
+        "candidates_returned": 3166
+      },
+      {
+        "label": "Method B  (symmetric delete, raw)",
+        "n_words": 1000,
+        "total_seconds": 0.0055343559997709235,
+        "per_word_ms": 0.0055343559997709235,
+        "words_per_second": 180689.49667158956,
+        "all_runs": [
+          0.006944627999473596,
+          0.005591309000010369,
+          0.0055343559997709235
+        ],
+        "median_seconds": 0.005591309000010369,
+        "candidates_returned": 6461
+      }
+    ],
+    "speedup_verified": 9.707989327591843,
+    "speedup_raw": 21.740989015684654,
+    "strings_built": {
+      "method_a": 352312,
+      "method_b": 6827
+    },
+    "output_mismatches": 0,
+    "crossover_lookups": 4527.043545117875
+  }
+}
