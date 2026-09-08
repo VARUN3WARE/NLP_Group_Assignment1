@@ -62,7 +62,8 @@ python main.py app             # interactive CLI
 **From Q1 (English only):**
 
 ```python
-# from inside q1/, or with PYTHONPATH=q1
+from q1_paths import ensure_q1_on_path
+ensure_q1_on_path()
 from segpos import load_english_pipeline
 pipe = load_english_pipeline()          # no retrain
 pipe.decode("thequickbrownfox")         # joint beam → [(word, tag), ...]

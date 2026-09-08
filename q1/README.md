@@ -9,6 +9,9 @@ decoding, baselines, and a joint beam decoder for Q4 reuse.
 q1/
 ├── main.py                      CLI entrypoint
 ├── README.md
+├── __init__.py                  makes `import q1.segpos` work from repo root
+├── language_model.py            shims (old flat import names still work)
+├── segmentation.py / pos_tagger.py / pipeline.py / ...
 ├── segpos/                      importable package
 │   ├── paths.py                 q1 root / artifacts / data paths
 │   ├── pipeline.py              train / save / load English bundle
@@ -57,14 +60,24 @@ python scripts/evaluate.py     # same evaluation
 
 ## Reuse from Question 4
 
-Run with `q1/` on `PYTHONPATH`, or from inside `q1/`:
+Preferred (from anywhere in the repo):
 
 ```python
+from q1_paths import ensure_q1_on_path
+ensure_q1_on_path()
 from segpos import load_english_pipeline
 
 pipe = load_english_pipeline()
 pipe.decode("thequickbrownfox")
-split, pairs = pipe.should_split("thequick")
+```
+
+Also supported when `q1/` is on `PYTHONPATH` / CWD:
+
+```python
+from segpos import load_english_pipeline
+# or old flat names still work:
+from pipeline import load_english_pipeline
+from language_model import TrigramLanguageModel
 ```
 
 Defaults stored in the pickle: `max_word_length=20`, `α=1.0`, `β=1.0`, `beam_width=8`.

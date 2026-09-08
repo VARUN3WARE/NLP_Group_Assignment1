@@ -40,7 +40,8 @@ def print_tiny_confusion_matrix(matrix, top_n=15):
 
     print("\nConfusion Matrix")
     print("----------------")
-    print(f"{'Actual \\ Predicted':<20}", end="")
+    header = "Actual \\ Predicted"
+    print(f"{header:<20}", end="")
     for tag in tags:
         print(f"{tag:<10}", end="")
     print()
