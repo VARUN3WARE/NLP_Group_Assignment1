@@ -1,0 +1,71 @@
+# NLP Group Assignment 1
+
+Integrated group repository for Questions 1–4.
+
+| Question | Folder | Status |
+|----------|--------|--------|
+| Q1 — Word segmentation + POS tagging | [`q1/`](q1/) | Complete (English + Spanish) |
+| Q2 — Transition-based dependency parser | `q2/` | In progress (separate) |
+| Q3 — Spelling corrector | [`q3/`](q3/) | Complete |
+| Q4 — Live background editor (Streamlit) | `q4/` | Next |
+
+Assignment brief: [`docs/Group_Assignment_1.pdf`](docs/Group_Assignment_1.pdf)
+
+## Quick start
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -c "import nltk; nltk.download('brown'); nltk.download('treebank'); nltk.download('punkt')"
+```
+
+### Question 1
+
+```bash
+cd q1
+# Place UD Spanish-GSD under data/spanish/UD_Spanish-GSD/ (see q1/README.md)
+python main.py train-english   # pickle English models for Q4 reuse
+python main.py sample          # demo strings
+python main.py evaluate        # full metrics (slow)
+```
+
+### Question 3
+
+```bash
+cd q3
+python main.py train           # builds models/brown_lm.pkl
+python main.py all --skip-train
+python main.py app             # interactive CLI
+```
+
+## Layout
+
+```text
+.
+├── README.md
+├── requirements.txt
+├── docs/
+│   └── Group_Assignment_1.pdf
+├── q1/          # segmentation + POS (EN / ES)
+├── q3/          # spelling corrector + CLI
+└── q4/          # coming next — reuses q1 + q3
+```
+
+## Cross-question reuse (for Q4)
+
+**From Q1 (English only):**
+
+```python
+from q1.pipeline import load_english_pipeline
+pipe = load_english_pipeline()          # no retrain
+pipe.decode("thequickbrownfox")         # joint beam → [(word, tag), ...]
+```
+
+**From Q3:**
+
+```python
+from spelling import load_models
+model, corrector = load_models()        # loads models/brown_lm.pkl
+corrector.correct_text("a test sentnce.")
+```
