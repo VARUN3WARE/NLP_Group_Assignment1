@@ -89,7 +89,8 @@ def train_english_pipeline(
     """Train English LM + POS tagger on Brown 80% split."""
     sentences = load_brown()
     train_sentences, _ = split_brown(sentences)
-    train_words = [[word for word, _tag in sent] for sent in train_sentences]
+    # Lowercase word forms for the segmentation LM (matches no-space decode).
+    train_words = [[word.lower() for word, _tag in sent] for sent in train_sentences]
 
     lm = TrigramLanguageModel()
     lm.train(train_words)

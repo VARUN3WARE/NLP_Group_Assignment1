@@ -57,13 +57,21 @@ def _get_pipeline(args: argparse.Namespace):
 def cmd_sample(args: argparse.Namespace) -> None:
     pipe = _get_pipeline(args)
 
+    # Assignment PDF English strings + a few of our own.
     english = [
         "thequickbrownfoxjumpsoverthelazydog",
         "thequickbrownfox",
         "tobeornottobe",
+        "itisagooddaytosegmentwords",
     ]
-    print("\nEnglish joint beam decode")
+    print("\nEnglish Viterbi segment-then-tag (Brown tagset; Q1 pipeline)")
     for text in english:
+        pairs = pipe.segment_then_tag(text)
+        print(f"  {text}")
+        print(f"  -> {pairs}\n")
+
+    print("English joint beam decode (same strings; used by Q4)")
+    for text in english[:2]:
         pairs = pipe.decode(text)
         print(f"  {text}")
         print(f"  -> {pairs}\n")
@@ -85,26 +93,30 @@ def cmd_sample(args: argparse.Namespace) -> None:
         morph = MorphologyAwarePOSTagger()
         morph.train_spanish(train)
 
+        # Assignment PDF Spanish strings (all three).
         spanish = [
-            "lacasarojaesgrande",
             "mispadrespuedenviajar",
             "elcielodespejadoesazul",
+            "lacasarojaesgrande",
+            "elgatomuerteenelsillon",  # own example
         ]
         print("\nSpanish segment + plain POS / morph POS")
         for text in spanish:
             w = seg.segment(text)
             print(f"  {text}")
+            print(f"  words -> {w}")
             print(f"  plain -> {plain.tag(w)}")
             print(f"  morph -> {morph.tag(w)}\n")
     except FileNotFoundError as exc:
         print(f"\nSkipping Spanish samples ({exc})")
 
 
-def cmd_evaluate(_args: argparse.Namespace) -> None:
-    from segpos.eval.experiments import run_full_evaluation
+def cmd_evaluate(args: argparse.Namespace) -> None:
+    from segpos.eval.experiments import DEFAULT_RESULTS_PATH, run_full_evaluation
 
-    print("Running full evaluation ...")
-    run_full_evaluation()
+    out = Path(args.out) if args.out else DEFAULT_RESULTS_PATH
+    print(f"Running full evaluation (results -> {out}) ...")
+    run_full_evaluation(results_path=out)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -131,6 +143,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_sample)
 
     p = sub.add_parser("evaluate", help="Run full metrics (slow)")
+    p.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="JSON path for metrics (default: q1/results/evaluation.json)",
+    )
     p.set_defaults(func=cmd_evaluate)
 
     return ap

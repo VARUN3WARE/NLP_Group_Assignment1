@@ -33,11 +33,15 @@ source .venv/bin/activate
 
 ```bash
 cd q1
-# Optional: clone UD Spanish-GSD into data/spanish/UD_Spanish-GSD/
+mkdir -p data/spanish
+git clone https://github.com/UniversalDependencies/UD_Spanish-GSD.git \
+  data/spanish/UD_Spanish-GSD
 python main.py train-english   # -> artifacts/english_pipeline.pkl
-python main.py sample
-python main.py evaluate        # full metrics (slow)
+python main.py sample          # PDF sample strings (EN + ES)
+python main.py evaluate        # -> results/evaluation.json (slow)
 ```
+
+Comparative report: [`q1/REPORT.md`](q1/REPORT.md).
 
 ### Question 3
 

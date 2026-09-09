@@ -1,0 +1,41 @@
+{
+  "english": {
+    "train_sentences": 45872,
+    "test_sentences": 11468,
+    "viterbi_seg": 0.4884897104987792,
+    "greedy_seg": 0.25497035228461806,
+    "seg_improvement": 0.23351935821416114,
+    "viterbi_pos": 0.9293897965253985,
+    "baseline_pos": 0.8728531611822898,
+    "pos_improvement": 0.05653663534310871,
+    "error_sources": {
+      "total_words": 181546,
+      "sentences_analyzed": 11468,
+      "segmentation_caused_errors": 16305,
+      "genuine_tagging_errors": 8405,
+      "segmentation_caused_frac": 0.6599,
+      "genuine_tagging_frac": 0.3401
+    }
+  },
+  "spanish": {
+    "train_sentences": 14186,
+    "dev_sentences": 1400,
+    "test_sentences": 427,
+    "viterbi_seg": 0.14988290398126464,
+    "greedy_seg": 0.06088992974238876,
+    "seg_improvement": 0.08899297423887588,
+    "viterbi_pos": 0.9294166666666667,
+    "baseline_pos": 0.8855,
+    "pos_improvement": 0.043916666666666715,
+    "morph_pos": 0.9056666666666666,
+    "morph_vs_plain": -0.02375000000000005,
+    "error_sources": {
+      "total_words": 12000,
+      "sentences_analyzed": 427,
+      "segmentation_caused_errors": 2415,
+      "genuine_tagging_errors": 506,
+      "segmentation_caused_frac": 0.8268,
+      "genuine_tagging_frac": 0.1732
+    }
+  }
+}

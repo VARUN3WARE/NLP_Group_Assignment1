@@ -53,10 +53,16 @@ def print_tiny_confusion_matrix(matrix, top_n=15):
         print()
 
 
-def evaluate_error_sources(gold_sentences, segmenter, tagger):
+def evaluate_error_sources(gold_sentences, segmenter, tagger, max_sentences: int | None = None):
     """
     Separate POS errors caused by bad segmentation from genuine tagging errors.
+
+    If max_sentences is set, only the first max_sentences gold sentences are used
+    (documented subsample for runtime; accuracy metrics still use the full test set).
     """
+    if max_sentences is not None:
+        gold_sentences = gold_sentences[:max_sentences]
+
     segmentation_caused_errors = 0
     genuine_tagging_errors = 0
     total_words = 0
@@ -99,6 +105,8 @@ def evaluate_error_sources(gold_sentences, segmenter, tagger):
 
     print("\nError Source Analysis")
     print("---------------------")
+    if max_sentences is not None:
+        print(f"(subsample: first {len(gold_sentences)} sentences)")
     print(f"Total gold words: {total_words}")
     print(f"Segmentation-caused errors: {segmentation_caused_errors}")
     print(f"Genuine tagging errors: {genuine_tagging_errors}")
@@ -108,8 +116,16 @@ def evaluate_error_sources(gold_sentences, segmenter, tagger):
 
     return {
         "total_words": total_words,
+        "sentences_analyzed": len(gold_sentences),
+        "max_sentences": max_sentences,
         "segmentation_caused_errors": segmentation_caused_errors,
         "genuine_tagging_errors": genuine_tagging_errors,
+        "segmentation_caused_frac": (
+            segmentation_caused_errors / total_errors if total_errors else None
+        ),
+        "genuine_tagging_frac": (
+            genuine_tagging_errors / total_errors if total_errors else None
+        ),
     }
 
 

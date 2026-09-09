@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import json
+import sys
+from pathlib import Path
+
 from segpos.baselines.simple import GreedyLongestMatchSegmenter, MostFrequentTagger
 from segpos.data.corpus import load_brown, load_spanish, split_brown
 from segpos.eval.metrics import (
@@ -13,22 +17,43 @@ from segpos.eval.metrics import (
     spanish_segmentation_accuracy,
 )
 from segpos.lm.trigram import TrigramLanguageModel
+from segpos.paths import Q1_ROOT
 from segpos.segmentation.viterbi import ViterbiSegmenter
 from segpos.tagging.pos_tagger import MorphologyAwarePOSTagger, TrigramPOSTagger
 
+RESULTS_DIR = Q1_ROOT / "results"
+DEFAULT_RESULTS_PATH = RESULTS_DIR / "evaluation.json"
 
-def run_full_evaluation(include_error_analysis: bool = True) -> dict:
-    results = {}
 
-    print("\n====================")
-    print("ENGLISH")
-    print("====================")
+def _log(msg: str = "") -> None:
+    print(msg, flush=True)
+
+
+def run_full_evaluation(
+    include_error_analysis: bool = True,
+    results_path: Path | None = DEFAULT_RESULTS_PATH,
+    error_analysis_max_sentences: int = 2000,
+) -> dict:
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except Exception:
+        pass
+
+    results: dict = {}
+
+    _log("\n====================")
+    _log("ENGLISH")
+    _log("====================")
 
     brown = load_brown()
     english_train, english_test = split_brown(brown)
+    print(f"Brown split: train={len(english_train)} test={len(english_test)} (80/20)")
 
+    # Lowercase for segmentation LM so it matches no-space evaluation strings.
     english_lm = TrigramLanguageModel()
-    english_lm.train([[word for word, _tag in sentence] for sentence in english_train])
+    english_lm.train(
+        [[word.lower() for word, _tag in sentence] for sentence in english_train]
+    )
 
     viterbi_segmenter = ViterbiSegmenter(english_lm)
     greedy_segmenter = GreedyLongestMatchSegmenter(english_lm.vocabulary)
@@ -64,24 +89,45 @@ def run_full_evaluation(include_error_analysis: bool = True) -> dict:
     matrix = confusion_matrix(english_test, english_predictions)
     print_tiny_confusion_matrix(matrix)
 
+    english_error_sources = None
     if include_error_analysis:
-        evaluate_error_sources(english_test, viterbi_segmenter, english_tagger)
+        print(
+            f"\nEnglish error-source analysis "
+            f"(first {error_analysis_max_sentences} test sentences)..."
+        )
+        english_error_sources = evaluate_error_sources(
+            english_test,
+            viterbi_segmenter,
+            english_tagger,
+            max_sentences=error_analysis_max_sentences,
+        )
 
     results["english"] = {
+        "train_sentences": len(english_train),
+        "test_sentences": len(english_test),
         "viterbi_seg": english_viterbi_seg_acc,
         "greedy_seg": english_greedy_seg_acc,
+        "seg_improvement": english_viterbi_seg_acc - english_greedy_seg_acc,
         "viterbi_pos": english_pos_acc,
         "baseline_pos": english_baseline_acc,
+        "pos_improvement": english_pos_acc - english_baseline_acc,
+        "error_sources": english_error_sources,
     }
 
     print("\n====================")
     print("SPANISH")
     print("====================")
 
-    spanish_train, _spanish_dev, spanish_test = load_spanish()
+    spanish_train, spanish_dev, spanish_test = load_spanish()
+    print(
+        f"Spanish-GSD: train={len(spanish_train)} "
+        f"dev={len(spanish_dev)} test={len(spanish_test)}"
+    )
 
     spanish_lm = TrigramLanguageModel()
-    spanish_lm.train([[token["form"] for token in sentence] for sentence in spanish_train])
+    spanish_lm.train(
+        [[token["form"].lower() for token in sentence] for sentence in spanish_train]
+    )
 
     spanish_viterbi_segmenter = ViterbiSegmenter(spanish_lm)
     spanish_greedy_segmenter = GreedyLongestMatchSegmenter(spanish_lm.vocabulary)
@@ -125,6 +171,22 @@ def run_full_evaluation(include_error_analysis: bool = True) -> dict:
     print(f"Most-frequent-tag accuracy:    {spanish_baseline_acc:.4%}")
     print(f"Improvement: {spanish_pos_acc - spanish_baseline_acc:.4%}")
 
+    spanish_matrix = confusion_matrix(spanish_plain_test, spanish_predictions)
+    print_tiny_confusion_matrix(spanish_matrix)
+
+    spanish_error_sources = None
+    if include_error_analysis:
+        print(
+            f"\nSpanish error-source analysis "
+            f"(up to {error_analysis_max_sentences} test sentences)..."
+        )
+        spanish_error_sources = evaluate_error_sources(
+            spanish_plain_test,
+            spanish_viterbi_segmenter,
+            spanish_tagger,
+            max_sentences=error_analysis_max_sentences,
+        )
+
     spanish_morph_tagger = MorphologyAwarePOSTagger()
     spanish_morph_tagger.train_spanish(spanish_train)
 
@@ -148,11 +210,18 @@ def run_full_evaluation(include_error_analysis: bool = True) -> dict:
     print(f"Difference from plain POS:     {spanish_morph_acc - spanish_pos_acc:.4%}")
 
     results["spanish"] = {
+        "train_sentences": len(spanish_train),
+        "dev_sentences": len(spanish_dev),
+        "test_sentences": len(spanish_test),
         "viterbi_seg": spanish_viterbi_seg_acc,
         "greedy_seg": spanish_greedy_seg_acc,
+        "seg_improvement": spanish_viterbi_seg_acc - spanish_greedy_seg_acc,
         "viterbi_pos": spanish_pos_acc,
         "baseline_pos": spanish_baseline_acc,
+        "pos_improvement": spanish_pos_acc - spanish_baseline_acc,
         "morph_pos": spanish_morph_acc,
+        "morph_vs_plain": spanish_morph_acc - spanish_pos_acc,
+        "error_sources": spanish_error_sources,
     }
 
     print("\n====================")
@@ -169,5 +238,11 @@ def run_full_evaluation(include_error_analysis: bool = True) -> dict:
     print(f"Spanish Viterbi:  {spanish_pos_acc:.4%}")
     print(f"Spanish Baseline: {spanish_baseline_acc:.4%}")
     print(f"Spanish Morph:    {spanish_morph_acc:.4%}")
+
+    if results_path is not None:
+        RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+        with open(results_path, "w", encoding="utf-8") as fh:
+            json.dump(results, fh, indent=2)
+        print(f"\nSaved metrics -> {results_path}")
 
     return results
