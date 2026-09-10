@@ -62,9 +62,12 @@ Comparative report: [`q3/REPORT.md`](q3/REPORT.md).
 cd q4
 python main.py train-lms              # Q4 bigram/trigram + PCFG cache
 python main.py analyze --seed 42      # sample run + results JSON
+python main.py analyze --seed 7
 python main.py bench                  # 1000-word Speed Demon
-streamlit run app.py                  # live UI
+streamlit run app.py                  # live UI (simulate + typing)
 ```
+
+Comparative report: [`q4/REPORT.md`](q4/REPORT.md). Demo numbers: [`q4/results/demo_outputs.json`](q4/results/demo_outputs.json).
 
 ## Layout
 

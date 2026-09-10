@@ -1,0 +1,76 @@
+{
+  "file_id": "chesterton-thursday.txt",
+  "seed": 7,
+  "p": 0.08,
+  "N": 5,
+  "avg_token_latency_ms": 0.12030658456821514,
+  "avg_trigger_latency_ms": 0.04580073887748016,
+  "n_alerts": 20,
+  "alert_kinds": {
+    "SEGMENT-ALERT": 15,
+    "SPELL-ALERT": 0,
+    "GRAMMAR-ALERT": 5
+  },
+  "sentences": [
+    {
+      "text": "he was making apparently for the extreme end of the line of cafes but he stopped abruptly",
+      "pcfg": "unparseable",
+      "bigram_lp": -108.97335737267521,
+      "trigram_lp": -141.2143983399635,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 4,
+      "spell_fixes": 0
+    },
+    {
+      "text": "with a sharp gesture he motioned them to silence but he pointed with one gloved finger to a cafe table under a bank of flowering foliage at which sat the marquis de st",
+      "pcfg": "unparseable",
+      "bigram_lp": -272.4932292749632,
+      "trigram_lp": -347.9066582604518,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 3,
+      "spell_fixes": 0
+    },
+    {
+      "text": "eustache his teeth shining in his thick black beard and his bold brown face shadowed by a light yellow straw hat and outlined against the violet sea",
+      "pcfg": "unparseable",
+      "bigram_lp": -224.96844047026786,
+      "trigram_lp": -301.2972901945543,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 1,
+      "spell_fixes": 0
+    },
+    {
+      "text": "chapter x the duel syme sat down at a cafe table with his companions his blue eyes sparkling like the bright sea below and ordered a bottle of saumur with a pleased impatience",
+      "pcfg": "unparseable",
+      "bigram_lp": -261.1218859560592,
+      "trigram_lp": -335.9312843190631,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 3,
+      "spell_fixes": 0
+    },
+    {
+      "text": "he was for some reason in a condition of curious hilarity",
+      "pcfg": "logP=-66.19*",
+      "bigram_lp": -72.80421785461107,
+      "trigram_lp": -98.83388658783024,
+      "method": "pcfg",
+      "verdict": "grammatical",
+      "seg_merges": 1,
+      "spell_fixes": 0
+    },
+    {
+      "text": "his spirits were already unnaturally high they rose as the saumur sank and in half an hour his talk was a torrent of nonsense",
+      "pcfg": "unparseable",
+      "bigram_lp": -194.01748513983588,
+      "trigram_lp": -247.83742069761257,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 3,
+      "spell_fixes": 0
+    }
+  ]
+}

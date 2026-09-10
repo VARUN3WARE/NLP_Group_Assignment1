@@ -1,0 +1,165 @@
+{
+  "config": {
+    "p": 0.08,
+    "N": 5,
+    "grammar_z_threshold": 2.5,
+    "live_real_word_margin_nats": 18.0
+  },
+  "sample_A": {
+    "seed": 42,
+    "source": "bible-kjv.txt",
+    "alerts": {
+      "SEGMENT-ALERT": 6,
+      "SPELL-ALERT": 0,
+      "GRAMMAR-ALERT": 4
+    },
+    "n_alerts": 10,
+    "latency_ms_token": 0.083,
+    "latency_ms_trigger": 0.063,
+    "table": [
+      {
+        "text": "and i be sought thy disciples to cast him out and they could not",
+        "pcfg": "unparseable",
+        "bigram_lp": -94.95755518280501,
+        "trigram_lp": -121.51067750976215,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 2,
+        "spell_fixes": 0
+      },
+      {
+        "text": "and jesus answering said o faith less and perverse generation how long shall i be with you and suffer you",
+        "pcfg": "unparseable",
+        "bigram_lp": -168.27367561206955,
+        "trigram_lp": -198.32199586308113,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 1,
+        "spell_fixes": 0
+      },
+      {
+        "text": "bring thy son hither",
+        "pcfg": "logP=-49.38*",
+        "bigram_lp": -48.92716042594715,
+        "trigram_lp": -52.86936083874902,
+        "method": "pcfg",
+        "verdict": "grammatical",
+        "seg_merges": 0,
+        "spell_fixes": 0
+      },
+      {
+        "text": "and as he was yet a coming the devil threw him down andtare him",
+        "pcfg": "logP=-111.07*",
+        "bigram_lp": -107.4462423816977,
+        "trigram_lp": -136.19850669492277,
+        "method": "pcfg",
+        "verdict": "grammatical",
+        "seg_merges": 2,
+        "spell_fixes": 0
+      },
+      {
+        "text": "and jesus rebuked the unclean spirit and healed the child and delivered him again to his father",
+        "pcfg": "unparseable",
+        "bigram_lp": -135.11266154150545,
+        "trigram_lp": -171.26408391407335,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 0,
+        "spell_fixes": 0
+      }
+    ],
+    "notes": [
+      "True merges fixed: himout, couldnot, andperverse, devilthrew",
+      "False OOV chops (documented limitation): besought\u2192be+sought, faithless\u2192faith+less",
+      "andtare left uncorrected (OOV literary compound)"
+    ]
+  },
+  "sample_B": {
+    "seed": 7,
+    "source": "chesterton-thursday.txt",
+    "alerts": {
+      "SEGMENT-ALERT": 15,
+      "SPELL-ALERT": 0,
+      "GRAMMAR-ALERT": 5
+    },
+    "n_alerts": 20,
+    "latency_ms_token": 0.12,
+    "latency_ms_trigger": 0.046,
+    "table": [
+      {
+        "text": "he was making apparently for the extreme end of the line of cafes but he stopped abruptly",
+        "pcfg": "unparseable",
+        "bigram_lp": -108.97335737267521,
+        "trigram_lp": -141.2143983399635,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 4,
+        "spell_fixes": 0
+      },
+      {
+        "text": "with a sharp gesture he motioned them to silence but he pointed with one gloved finger to a cafe table under a bank of flowering foliage at which sat the marquis de st",
+        "pcfg": "unparseable",
+        "bigram_lp": -272.4932292749632,
+        "trigram_lp": -347.9066582604518,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 3,
+        "spell_fixes": 0
+      },
+      {
+        "text": "eustache his teeth shining in his thick black beard and his bold brown face shadowed by a light yellow straw hat and outlined against the violet sea",
+        "pcfg": "unparseable",
+        "bigram_lp": -224.96844047026786,
+        "trigram_lp": -301.2972901945543,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 1,
+        "spell_fixes": 0
+      },
+      {
+        "text": "chapter x the duel syme sat down at a cafe table with his companions his blue eyes sparkling like the bright sea below and ordered a bottle of saumur with a pleased impatience",
+        "pcfg": "unparseable",
+        "bigram_lp": -261.1218859560592,
+        "trigram_lp": -335.9312843190631,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 3,
+        "spell_fixes": 0
+      },
+      {
+        "text": "he was for some reason in a condition of curious hilarity",
+        "pcfg": "logP=-66.19*",
+        "bigram_lp": -72.80421785461107,
+        "trigram_lp": -98.83388658783024,
+        "method": "pcfg",
+        "verdict": "grammatical",
+        "seg_merges": 1,
+        "spell_fixes": 0
+      },
+      {
+        "text": "his spirits were already unnaturally high they rose as the saumur sank and in half an hour his talk was a torrent of nonsense",
+        "pcfg": "unparseable",
+        "bigram_lp": -194.01748513983588,
+        "trigram_lp": -247.83742069761257,
+        "method": "trigram",
+        "verdict": "implausible",
+        "seg_merges": 3,
+        "spell_fixes": 0
+      }
+    ],
+    "notes": [
+      "Many true merges split cleanly (wasmaking, ofthe, tosilence, ...)",
+      "Zero SPELL-ALERT on this passage with conservative filters",
+      "One short sentence got pcfg/grammatical; long literary sentences fall to trigram"
+    ]
+  },
+  "speed_demon": {
+    "n_words": 1000,
+    "seg_spell_total_s": 0.715969180000684,
+    "seg_spell_per_word_ms": 0.715969180000684,
+    "grammar_total_s": 0.010155747000681004,
+    "grammar_per_word_ms": 0.010155747000681004,
+    "seg_spell_overhead_ms": 0.705813433000003,
+    "conclusion": "Segmentation+spelling costs 0.716 ms/word vs 0.010 ms/word for grammar-trigger checks (overhead 0.706 ms/word). Live per-token seg+spell is cheap enough to keep enabled."
+  }
+}

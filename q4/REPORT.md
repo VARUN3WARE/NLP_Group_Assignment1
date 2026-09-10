@@ -3,6 +3,10 @@
 Integrated background editor: Q1 joint segmentation/POS, Q3 spelling, Q4
 smoothed n-grams + PCFG constituency checking.
 
+Canonical numbers below match `results/demo_outputs.json` from
+`python main.py analyze --seed 42`, `analyze --seed 7`, and `bench`
+(this machine). Exact latencies vary slightly by hardware.
+
 ## Configuration choices
 
 | Parameter | Value | Justification |
@@ -10,10 +14,11 @@ smoothed n-grams + PCFG constituency checking.
 | Merge probability `p` | **0.08** | Spec example; yields enough spacebar-miss merges for segmentation without flooding every token |
 | Grammar trigger `N` | **5** | Short enough to catch local anomalies quickly; keeps trigger cost low vs per-token seg/spell |
 | Add-k for Q4 LMs | **0.01** | Same operating point as Q3; avoids zero probs without swamping ML counts |
-| Spell candidates | **Method B** | Q3 showed B ≡ A on candidates and ~13× faster — required for live UI |
-| Real-word margin | **5.0 nats** | Q3 default threshold |
-| Grammar z-threshold | **2.5** | Adaptive relative outlier detection (robust z-score via median + MAD); alerts only when a window's perplexity is >2.5×MAD above the passage's own running baseline. Avoids false alarms from Brown-vs-Gutenberg domain shift that a fixed absolute threshold (e.g. 5000) cannot. |
-| Grammar warmup | **3 windows** | Minimum windows seen before z-score alerts fire, preventing spurious alerts on the first few windows of a passage |
+| Spell candidates | **Method B** | Q3 showed B ≡ A on candidates and ~9× faster on this machine — required for live UI |
+| Q3 real-word threshold | **5.0 nats** | Q3 default for the loaded corrector |
+| Live real-word margin | **≥ 18.0 nats** | Editor override in `live_checker.py` — suppresses `leafy→leaf` / `leads→lead` / `pert→part` cascades on literary text |
+| Grammar z-threshold | **2.5** | Adaptive relative outlier detection (robust z-score via median + MAD); alerts only when a window's perplexity is >2.5×MAD above the passage's own running baseline |
+| Grammar warmup | **3 windows** | Minimum windows seen before z-score alerts fire |
 | PCFG sentence cap | **25 tokens** | CKY/Viterbi on long Melville/Chesterton sentences is too slow for interactive use; longer → `unparseable` |
 
 **Reuse boundary:** Q1 English trigram + beam decoder are **loaded only** for segmentation scoring. Q3 vocab/unigram/bigram + Method B are **loaded only** for spelling / real-word. Q4 trains its **own** Brown add-k bigram+trigram for grammar alerts and final scores, and its **own** PTB PCFG.
@@ -22,7 +27,7 @@ smoothed n-grams + PCFG constituency checking.
 
 Q1 emits **Brown** tags (`AT`, `BEDZ`, `PPO`, …). The PCFG lexicon uses **Penn Treebank** tags. We map with a fixed lookup in `editor/tagset.py` (e.g. `AT→DT`, `BEZ→VBZ`, `PPSS→PRP`). Unseen Brown tags fall back to `NN` after stripping Brown hyphen suffixes.
 
-**Accuracy cost:** mapping is many-to-one and loses Brown-specific distinctions (e.g. `BE*` forms → coarse PTB verb tags). For parsing we still run the PCFG over **words** (ViterbiParser lexicon); Brown→PTB is applied when packaging tagged pairs and is documented for the assignment’s reconciliation requirement. PTB-OOV surface words are projected to the known noun `something` so CKY can return a structural score (`logP=…*` in the table). Projection biases lexical probability but preserves a usable constituency signal.
+**Accuracy cost:** mapping is many-to-one and loses Brown-specific distinctions (e.g. `BE*` forms → coarse PTB verb tags). Parsing still runs over **words** (ViterbiParser lexicon); Brown→PTB is applied when packaging tagged pairs for the assignment’s reconciliation requirement. PTB-OOV surface words are projected to the known noun `something` so CKY can return a structural score (`logP=…*` in the table). Projection biases lexical probability but preserves a usable constituency signal.
 
 ## Decision rule (Part 4)
 
@@ -32,60 +37,96 @@ Q1 emits **Brown** tags (`AT`, `BEDZ`, `PPO`, …). The PCFG lexicon uses **Penn
 
 ## Sample run A (`--seed 42`, bible-kjv)
 
-- Merges such as `himout`, `couldnot` correctly raised **SEGMENT-ALERT** and split.
-- Grammar triggers fired only on genuinely anomalous windows (e.g. windows containing false splits or merge artifacts) via the adaptive z-score rule — ~4 alerts instead of ~13 with the old fixed threshold.
-- Latency: ~0.08 ms/token seg+spell, ~0.06 ms/trigger grammar — far below typing delay.
+Source: `bible-kjv.txt`, 5 sentences, 63 tokens.
 
-## Sample run B (`--seed 7` / `99`, Chesterton / Moby Dick)
+| Alert kind | Count |
+|------------|------:|
+| SEGMENT | 6 |
+| SPELL | 0 |
+| GRAMMAR | 4 |
 
-- Merges like `wasmaking`, `ofthe`, `wascarried`, `whofirst` split cleanly when both pieces were in the Q3 vocabulary.
-- Conservative spell filters prevent harmful real-word cascades (`crab→grab`, `snout→shout`, `hatter→matter` all rejected); rare literary OOV words stay uncorrected rather than being wrongly rewritten.
-- Binary-split fallback recovers merges that Q1 over-segments (`saidthank→said+thank`, `anychances→any+chances`).
-- One shorter projected sentence received **pcfg / grammatical**; long sentences were `unparseable` (length cap or chart failure) and fell back to trigram.
+Latency: **0.08 ms/token** seg+spell, **0.06 ms/trigger** grammar.
+
+- True merges fixed: `himout`, `couldnot`, `andperverse`, `devilthrew`.
+- False OOV chops (limitation): `besought→be+sought`, `faithless→faith+less`.
+- Grammar z-score fired on 4 anomalous windows only (not every window).
+- End table: 2 short/projected sentences **pcfg / grammatical**; longer KJV lines **trigram / implausible**.
+
+Full table: `results/demo_outputs.json` → `sample_A.table`.
+
+## Sample run B (`--seed 7`, chesterton-thursday)
+
+Source: `chesterton-thursday.txt`, 6 sentences, 130 tokens.
+
+| Alert kind | Count |
+|------------|------:|
+| SEGMENT | 15 |
+| SPELL | 0 |
+| GRAMMAR | 5 |
+
+Latency: **0.12 ms/token** seg+spell, **0.05 ms/trigger** grammar.
+
+- Many true merges split cleanly (`wasmaking`, `ofthe`, `tosilence`, `undera`, …).
+- Zero SPELL-ALERT with conservative filters.
+- One short sentence **pcfg / grammatical**; long literary sentences fall to trigram.
+
+Full table: `results/demo_outputs.json` → `sample_B.table`.
 
 ## Speed Demon (1000 words)
 
+From `results/speed_demon.json` (this machine):
+
 | Path | Total | Per word |
 |------|------:|--------:|
-| Segmentation + spelling | 0.369 s | **0.369 ms** |
-| Grammar-trigger only | 0.019 s | **0.019 ms** |
-| Overhead (seg+spell − grammar) | — | **0.350 ms** |
+| Segmentation + spelling | 0.716 s | **0.716 ms** |
+| Grammar-trigger only | 0.010 s | **0.010 ms** |
+| Overhead (seg+spell − grammar) | — | **0.706 ms** |
 
-**Conclusion:** The segmentation+spelling layer is cheap enough to keep on every token in live mode; throttling it to the grammar interval is unnecessary at ~0.4 ms/word.
+**Conclusion:** The segmentation+spelling layer is still well under a few ms/word — cheap enough to keep on every token in live mode; throttling it to the grammar interval is unnecessary.
 
 ## Comparative analysis
 
-1. **Live alerts vs final verdict:** SEGMENT/SPELL alerts are local and usually agree with the corrected sentence used in Part 4. GRAMMAR-ALERT windows fire adaptively: the robust z-score approach tracks the passage's own perplexity baseline and only flags windows that are statistical outliers relative to that baseline, so normal literary text no longer triggers constant alerts.
+1. **Live alerts vs final verdict:** SEGMENT/SPELL alerts are local and usually agree with the corrected sentence used in Part 4. GRAMMAR-ALERT windows fire adaptively via robust z-score against the passage’s own baseline, so Brown-vs-Gutenberg domain shift no longer floods every window.
 
-2. **PCFG vs n-grams:** PCFG (when it parses) prefers short, PTB-like structure. N-grams catch local lexical implausibility and domain shift. Long literary sentences almost never get a PCFG verdict under our length cap — n-grams carry those cases.
+2. **PCFG vs n-grams:** PCFG (when it parses) prefers short, PTB-like structure. N-grams catch local lexical implausibility and domain shift. Long literary sentences almost never get a PCFG verdict under the length cap — n-grams carry those cases.
 
 3. **`p` and `N`:** Higher `p` increases SEGMENT-ALERT rate and gives Q1 real work; higher `N` delays GRAMMAR-ALERT but reduces trigger overhead. `p=0.08`, `N=5` is a practical balance.
 
-4. **Sub-system interactions:** A successful SEGMENT split can turn an OOV merge into in-vocab words and suppress SPELL. Conversely, SPELL rewriting a rare in-context word (whale→while) can flip window perplexity and the Part-4 method. PCFG projection (`*`) means lexical identity was altered for parseability — another interaction to note when comparing methods.
+4. **Sub-system interactions:** A successful SEGMENT split can turn an OOV merge into in-vocab words and suppress SPELL. Conversely, a SPELL rewrite can flip window perplexity and the Part-4 method. PCFG projection (`*`) alters lexical identity for parseability — another interaction when comparing methods. Live real-word margin (≥18) is stricter than Q3’s default so the editor does not cascade literary rewrites into grammar noise.
 
 ## Known limitations
 
-1. **Literary / archaic OOV words:** Words absent from the Brown corpus (e.g. `hatter`, `dormouse`, `besought`) are treated as OOV by the segmenter. The editor applies conservative filters — rejecting spell suggestions that change the first letter or lack a shared prefix (so `hatter→matter` is rejected) and rejecting splits into 2-letter junk fragments (so `jackal→jack+al` is rejected). The tradeoff is that some genuine OOV words stay uncorrected, which is safer for a live editor than aggressive auto-rewriting.
+1. **Literary / archaic OOV words:** Absent from Brown (e.g. `hatter`, `dormouse`, `besought`). Conservative spell filters reject first-letter changes and weak shared stems; some genuine OOVs stay uncorrected rather than being wrongly rewritten.
 
-2. **Over-segmentation of morphologically complex words:** Words like `besought` (be+sought) or `faithless` (faith+less) that are OOV in Brown but whose substrings are valid words may be incorrectly split. This is inherent to the spacebar-miss detection model — the editor cannot distinguish `besought` (one word) from `himout` (two merged words) without a larger lexicon.
+2. **Over-segmentation of morphologically complex words:** OOV words whose substrings are valid (`besought`, `faithless`) may be incorrectly split — the spacebar-miss model cannot always tell one morphological word from two merged words.
 
-3. **Binary split fallback:** When Q1's joint beam decoder over-segments (e.g. `saidthank→said+than+k`), Q4 falls back to a binary cut search that prefers a single split into two in-vocab words. This recovers `marchhare→march+hare`, `saidthank→said+thank`, `anychances→any+chances`, and `asit's→as+it's`, but cannot help when one piece is genuinely absent from Brown (e.g. `hare` is in Brown, but a hypothetical OOV piece would block the split).
+3. **Binary split fallback:** When Q1 over-segments (`saidthank→said+than+k`), Q4 tries a binary in-vocab cut (`said+thank`, `march+hare`, `asit's`). This fails if either piece is missing from Brown.
 
-## Streamlit
+## Streamlit (Part 5)
 
 ```bash
 cd q4 && ../.venv/bin/streamlit run app.py
 ```
 
-Modes: **Simulate passage** (auto stream with merges) and **Live typing** (incremental processing). After completion the UI shows the Part-4 table and latencies.
+Modes: **Simulate passage** (auto stream with merges) and **Live typing** (only completed words after space/punctuation). Alerts use color-coded cards; end analysis shows the Part-4 table and latency metrics. CLI transcripts for fixed seeds are in `results/demo_outputs.json` (Streamlit mirrors the same pipeline).
+
+## Submission checklist (PDF Parts 1–5)
+
+| Part | Evidence |
+|------|----------|
+| 1 Live stream + merges + SEGMENT/SPELL/GRAMMAR | `editor/passage.py`, `live_checker.py`; `analyze --seed 42/7` |
+| 2 PCFG + Viterbi + unparseable + Brown→PTB | `editor/pcfg.py`, `tagset.py`; table `pcfg` column |
+| 3 Q4 bigram/trigram (reuse Q1/Q3, no retrain) | `editor/ngram_lm.py`, `adapters.py` |
+| 4 End table + decision rule | `editor/analysis.py`; `demo_outputs.json` tables |
+| 5 Streamlit + Speed Demon | `app.py`; `python main.py bench` → `speed_demon.json` |
 
 ## How to reproduce
 
 ```bash
-source ../.venv/bin/activate
-python main.py train-lms
+cd q4
+python main.py train-lms                 # once
 python main.py analyze --seed 42
-python main.py analyze --seed 99
+python main.py analyze --seed 7
 python main.py bench
 streamlit run app.py
 ```

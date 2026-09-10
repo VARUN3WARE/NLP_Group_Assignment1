@@ -355,7 +355,8 @@ class LiveChecker:
                 fixed, gain = self.corrector.correct_real_word(
                     word, prev=prev, nxt=EOS, method="B"
                 )
-                # Stronger margin for live/editor use to avoid leafy→leaf, leads→lead, pert→part.
+                # Live editor uses a stricter margin than Q3's default (5.0) —
+                # see REPORT.md "live real-word margin" (≥18 nats).
                 margin = max(self.config.real_word_threshold, 18.0)
                 if fixed != word and gain >= margin and fixed[0] == word[0]:
                     alerts.append(

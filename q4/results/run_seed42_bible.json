@@ -1,0 +1,66 @@
+{
+  "file_id": "bible-kjv.txt",
+  "seed": 42,
+  "p": 0.08,
+  "N": 5,
+  "avg_token_latency_ms": 0.08298342857862794,
+  "avg_trigger_latency_ms": 0.06294615405540054,
+  "n_alerts": 10,
+  "alert_kinds": {
+    "SEGMENT-ALERT": 6,
+    "SPELL-ALERT": 0,
+    "GRAMMAR-ALERT": 4
+  },
+  "sentences": [
+    {
+      "text": "and i be sought thy disciples to cast him out and they could not",
+      "pcfg": "unparseable",
+      "bigram_lp": -94.95755518280501,
+      "trigram_lp": -121.51067750976215,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 2,
+      "spell_fixes": 0
+    },
+    {
+      "text": "and jesus answering said o faith less and perverse generation how long shall i be with you and suffer you",
+      "pcfg": "unparseable",
+      "bigram_lp": -168.27367561206955,
+      "trigram_lp": -198.32199586308113,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 1,
+      "spell_fixes": 0
+    },
+    {
+      "text": "bring thy son hither",
+      "pcfg": "logP=-49.38*",
+      "bigram_lp": -48.92716042594715,
+      "trigram_lp": -52.86936083874902,
+      "method": "pcfg",
+      "verdict": "grammatical",
+      "seg_merges": 0,
+      "spell_fixes": 0
+    },
+    {
+      "text": "and as he was yet a coming the devil threw him down andtare him",
+      "pcfg": "logP=-111.07*",
+      "bigram_lp": -107.4462423816977,
+      "trigram_lp": -136.19850669492277,
+      "method": "pcfg",
+      "verdict": "grammatical",
+      "seg_merges": 2,
+      "spell_fixes": 0
+    },
+    {
+      "text": "and jesus rebuked the unclean spirit and healed the child and delivered him again to his father",
+      "pcfg": "unparseable",
+      "bigram_lp": -135.11266154150545,
+      "trigram_lp": -171.26408391407335,
+      "method": "trigram",
+      "verdict": "implausible",
+      "seg_merges": 0,
+      "spell_fixes": 0
+    }
+  ]
+}
