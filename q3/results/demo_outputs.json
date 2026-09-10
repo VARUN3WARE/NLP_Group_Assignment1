@@ -1,0 +1,341 @@
+{
+  "threshold": 5.0,
+  "brief_sentences": [
+    {
+      "input": "I hav a good feeling about this.",
+      "output": "I had a good feeling about this.",
+      "latency_ms": 0.622,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "hav",
+          "corrected": "had",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "This is a test sentnce.",
+      "output": "This is a test sentence.",
+      "latency_ms": 0.322,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "sentnce",
+          "corrected": "sentence",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "I would like to sea the world.",
+      "output": "I would like to see the world.",
+      "latency_ms": 0.586,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "sea",
+          "corrected": "see",
+          "score_gain": 7.251
+        }
+      ]
+    },
+    {
+      "input": "Please meat me at the station.",
+      "output": "Please beat me at the station.",
+      "latency_ms": 0.472,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "meat",
+          "corrected": "beat",
+          "score_gain": 5.526
+        }
+      ]
+    }
+  ],
+  "own_sentences": [
+    {
+      "input": "She is a very god student in the class.",
+      "output": "She is a very good student in the class.",
+      "latency_ms": 0.695,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "god",
+          "corrected": "good",
+          "score_gain": 5.827
+        }
+      ]
+    },
+    {
+      "input": "The govenment anounced a new policey yesterday.",
+      "output": "The government announced a new policy yesterday.",
+      "latency_ms": 0.744,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "govenment",
+          "corrected": "government",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "anounced",
+          "corrected": "announced",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "policey",
+          "corrected": "policy",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "He wants to by a peace of cake.",
+      "output": "He wants to by a peace of case.",
+      "latency_ms": 0.353,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "cake",
+          "corrected": "case",
+          "score_gain": 18.635
+        }
+      ]
+    },
+    {
+      "input": "Thier answer was completly diffrent from ours.",
+      "output": "Their answer was completely different from ours.",
+      "latency_ms": 4.558,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "thier",
+          "corrected": "their",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "completly",
+          "corrected": "completely",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "diffrent",
+          "corrected": "different",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "I can not beleive how quikly the yeer went.",
+      "output": "I can not believe how quickly the year went.",
+      "latency_ms": 0.922,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "beleive",
+          "corrected": "believe",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "quikly",
+          "corrected": "quickly",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "yeer",
+          "corrected": "year",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "The whether was terrible during the hole trip.",
+      "output": "The whether was terrible during the whole trip.",
+      "latency_ms": 0.962,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "hole",
+          "corrected": "whole",
+          "score_gain": 8.372
+        }
+      ]
+    }
+  ],
+  "all": [
+    {
+      "input": "I hav a good feeling about this.",
+      "output": "I had a good feeling about this.",
+      "latency_ms": 0.622,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "hav",
+          "corrected": "had",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "This is a test sentnce.",
+      "output": "This is a test sentence.",
+      "latency_ms": 0.322,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "sentnce",
+          "corrected": "sentence",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "I would like to sea the world.",
+      "output": "I would like to see the world.",
+      "latency_ms": 0.586,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "sea",
+          "corrected": "see",
+          "score_gain": 7.251
+        }
+      ]
+    },
+    {
+      "input": "Please meat me at the station.",
+      "output": "Please beat me at the station.",
+      "latency_ms": 0.472,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "meat",
+          "corrected": "beat",
+          "score_gain": 5.526
+        }
+      ]
+    },
+    {
+      "input": "She is a very god student in the class.",
+      "output": "She is a very good student in the class.",
+      "latency_ms": 0.695,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "god",
+          "corrected": "good",
+          "score_gain": 5.827
+        }
+      ]
+    },
+    {
+      "input": "The govenment anounced a new policey yesterday.",
+      "output": "The government announced a new policy yesterday.",
+      "latency_ms": 0.744,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "govenment",
+          "corrected": "government",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "anounced",
+          "corrected": "announced",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "policey",
+          "corrected": "policy",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "He wants to by a peace of cake.",
+      "output": "He wants to by a peace of case.",
+      "latency_ms": 0.353,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "cake",
+          "corrected": "case",
+          "score_gain": 18.635
+        }
+      ]
+    },
+    {
+      "input": "Thier answer was completly diffrent from ours.",
+      "output": "Their answer was completely different from ours.",
+      "latency_ms": 4.558,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "thier",
+          "corrected": "their",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "completly",
+          "corrected": "completely",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "diffrent",
+          "corrected": "different",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "I can not beleive how quikly the yeer went.",
+      "output": "I can not believe how quickly the year went.",
+      "latency_ms": 0.922,
+      "changes": [
+        {
+          "kind": "non-word",
+          "original": "beleive",
+          "corrected": "believe",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "quikly",
+          "corrected": "quickly",
+          "score_gain": null
+        },
+        {
+          "kind": "non-word",
+          "original": "yeer",
+          "corrected": "year",
+          "score_gain": null
+        }
+      ]
+    },
+    {
+      "input": "The whether was terrible during the hole trip.",
+      "output": "The whether was terrible during the whole trip.",
+      "latency_ms": 0.962,
+      "changes": [
+        {
+          "kind": "real-word",
+          "original": "hole",
+          "corrected": "whole",
+          "score_gain": 8.372
+        }
+      ]
+    }
+  ]
+}

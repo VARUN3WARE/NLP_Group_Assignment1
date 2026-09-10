@@ -56,7 +56,7 @@ corrector.method_b.candidates("sentnce")
 | Vocabulary | 40,542 types |
 | Non-word accuracy | **91.96 %** |
 | Real-word accuracy | **61.37 %** |
-| Method B vs A | **13.6× faster**, identical candidates |
-| Interactive latency | ~0.4 ms / sentence |
+| Method B vs A | **~9.2× faster** (this machine), identical candidates |
+| Interactive latency | ~0.4–1.5 ms / sentence |
 
-Full write-up: [REPORT.md](REPORT.md).
+Full write-up: [REPORT.md](REPORT.md). Sample CLI outputs: `results/demo_outputs.json`.

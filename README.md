@@ -48,9 +48,13 @@ Comparative report: [`q1/REPORT.md`](q1/REPORT.md).
 ```bash
 cd q3
 python main.py train           # -> artifacts/brown_lm.pkl
-python main.py all --skip-train
-python main.py app             # interactive CLI
+python main.py eval --full     # accuracy -> results/results.json
+python main.py bench           # Speed Demon A vs B
+python main.py demo            # PDF + own samples -> results/demo_outputs.json
+python main.py app             # interactive Terminal CLI (Part 5)
 ```
+
+Comparative report: [`q3/REPORT.md`](q3/REPORT.md).
 
 ### Question 4
 

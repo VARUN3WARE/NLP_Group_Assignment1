@@ -65,7 +65,7 @@
       "untouched": 0,
       "wrong_correction": 452,
       "collateral": 680,
-      "elapsed": 1.1794516520003526,
+      "elapsed": 0.6692805679995217,
       "accuracy": 0.9195729537366548
     },
     "non_word_full_pipeline": {
@@ -75,7 +75,7 @@
       "untouched": 0,
       "wrong_correction": 452,
       "collateral": 1810,
-      "elapsed": 13.697982168000635,
+      "elapsed": 7.395341836000625,
       "accuracy": 0.9195729537366548
     },
     "real_word": {
@@ -85,7 +85,7 @@
       "untouched": 1694,
       "wrong_correction": 477,
       "collateral": 1821,
-      "elapsed": 14.29561917599949,
+      "elapsed": 7.441449584999646,
       "accuracy": 0.6137010676156583
     },
     "real_word_no_context": {
@@ -95,7 +95,7 @@
       "untouched": 5620,
       "wrong_correction": 0,
       "collateral": 680,
-      "elapsed": 0.38348139400022774,
+      "elapsed": 0.19962550800028112,
       "accuracy": 0.0
     },
     "false_alarms": {
@@ -179,10 +179,160 @@
       {
         "scoring": "interpolated",
         "unigram_discount": 1.0,
-        "real_word_accuracy": 0.3644128113879004,
+        "real_word_accuracy": 0.36459074733096086,
         "false_alarm_per_word": 0.014927060952165555
       }
     ],
+    "residual_errors": {
+      "non_word": [
+        {
+          "gold": "his",
+          "typed": "eis",
+          "predicted": "is",
+          "count": 3
+        },
+        {
+          "gold": "had",
+          "typed": "hed",
+          "predicted": "he",
+          "count": 3
+        },
+        {
+          "gold": "they",
+          "typed": "thez",
+          "predicted": "the",
+          "count": 2
+        },
+        {
+          "gold": "was",
+          "typed": "ws",
+          "predicted": "is",
+          "count": 2
+        },
+        {
+          "gold": "then",
+          "typed": "thrn",
+          "predicted": "than",
+          "count": 2
+        },
+        {
+          "gold": "that",
+          "typed": "thae",
+          "predicted": "the",
+          "count": 2
+        },
+        {
+          "gold": "roll",
+          "typed": "woll",
+          "predicted": "will",
+          "count": 1
+        },
+        {
+          "gold": "waxy",
+          "typed": "waxf",
+          "predicted": "wax",
+          "count": 1
+        },
+        {
+          "gold": "him",
+          "typed": "hims",
+          "predicted": "his",
+          "count": 1
+        },
+        {
+          "gold": "then",
+          "typed": "thzn",
+          "predicted": "than",
+          "count": 1
+        },
+        {
+          "gold": "item",
+          "typed": "itemo",
+          "predicted": "items",
+          "count": 1
+        },
+        {
+          "gold": "she",
+          "typed": "sher",
+          "predicted": "her",
+          "count": 1
+        }
+      ],
+      "real_word": [
+        {
+          "gold": "the",
+          "typed": "he",
+          "predicted": "he",
+          "count": 31
+        },
+        {
+          "gold": "the",
+          "typed": "they",
+          "predicted": "they",
+          "count": 10
+        },
+        {
+          "gold": "the",
+          "typed": "them",
+          "predicted": "them",
+          "count": 9
+        },
+        {
+          "gold": "and",
+          "typed": "an",
+          "predicted": "an",
+          "count": 9
+        },
+        {
+          "gold": "this",
+          "typed": "his",
+          "predicted": "his",
+          "count": 8
+        },
+        {
+          "gold": "and",
+          "typed": "ad",
+          "predicted": "ad",
+          "count": 7
+        },
+        {
+          "gold": "what",
+          "typed": "chat",
+          "predicted": "that",
+          "count": 6
+        },
+        {
+          "gold": "and",
+          "typed": "any",
+          "predicted": "any",
+          "count": 5
+        },
+        {
+          "gold": "she",
+          "typed": "the",
+          "predicted": "the",
+          "count": 5
+        },
+        {
+          "gold": "you're",
+          "typed": "you've",
+          "predicted": "you've",
+          "count": 5
+        },
+        {
+          "gold": "problem",
+          "typed": "problems",
+          "predicted": "problems",
+          "count": 5
+        },
+        {
+          "gold": "program",
+          "typed": "programs",
+          "predicted": "programs",
+          "count": 5
+        }
+      ]
+    },
     "config": {
       "threshold": 5.0,
       "method": "both",
@@ -196,8 +346,8 @@
     "batch_size": 1000,
     "mean_word_length": 5.827,
     "build_seconds": {
-      "method_a": 5.196000529394951e-06,
-      "method_b": 0.4885957199994664
+      "method_a": 5.244000021775719e-06,
+      "method_b": 0.2477299240008506
     },
     "symspell_keys": 313857,
     "symspell_postings": 348252,
@@ -205,53 +355,53 @@
       {
         "label": "Method A  (edit-distance-1 generation)",
         "n_words": 1000,
-        "total_seconds": 0.12032237299990811,
-        "per_word_ms": 0.12032237299990811,
-        "words_per_second": 8311.00629972419,
+        "total_seconds": 0.06182862199966621,
+        "per_word_ms": 0.06182862199966621,
+        "words_per_second": 16173.739081640839,
         "all_runs": [
-          0.12860332600030233,
-          0.12032237299990811,
-          0.12682812999992166
+          0.06311243000072864,
+          0.06182862199966621,
+          0.06251113700000133
         ],
-        "median_seconds": 0.12682812999992166,
+        "median_seconds": 0.06251113700000133,
         "candidates_returned": 3166
       },
       {
         "label": "Method B  (symmetric delete + verify)",
         "n_words": 1000,
-        "total_seconds": 0.01239415999953053,
-        "per_word_ms": 0.01239415999953053,
-        "words_per_second": 80683.160459271,
+        "total_seconds": 0.006729327999892121,
+        "per_word_ms": 0.006729327999892121,
+        "words_per_second": 148603.24835050857,
         "all_runs": [
-          0.01239415999953053,
-          0.01269538399992598,
-          0.012961389999873063
+          0.0074638900005084,
+          0.006908571999701962,
+          0.006729327999892121
         ],
-        "median_seconds": 0.01269538399992598,
+        "median_seconds": 0.006908571999701962,
         "candidates_returned": 3166
       },
       {
         "label": "Method B  (symmetric delete, raw)",
         "n_words": 1000,
-        "total_seconds": 0.0055343559997709235,
-        "per_word_ms": 0.0055343559997709235,
-        "words_per_second": 180689.49667158956,
+        "total_seconds": 0.002534881000428868,
+        "per_word_ms": 0.002534881000428868,
+        "words_per_second": 394495.83622695244,
         "all_runs": [
-          0.006944627999473596,
-          0.005591309000010369,
-          0.0055343559997709235
+          0.003511068000079831,
+          0.0029817109998475644,
+          0.002534881000428868
         ],
-        "median_seconds": 0.005591309000010369,
+        "median_seconds": 0.0029817109998475644,
         "candidates_returned": 6461
       }
     ],
-    "speedup_verified": 9.707989327591843,
-    "speedup_raw": 21.740989015684654,
+    "speedup_verified": 9.187934070186117,
+    "speedup_raw": 24.39113393851847,
     "strings_built": {
       "method_a": 352312,
       "method_b": 6827
     },
     "output_mismatches": 0,
-    "crossover_lookups": 4527.043545117875
+    "crossover_lookups": 4496.06348861505
   }
 }

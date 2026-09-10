@@ -257,14 +257,29 @@ def cmd_eval(args: argparse.Namespace) -> None:
 
     # ---- residual errors -------------------------------------------------#
     print("\nMost common residual non-word errors  (gold | typed | predicted)")
-    for (gold, typed, got), n in error_breakdown(
-            corrector, non_word, check_real_words=False, top=12).most_common():
+    nw_residuals = error_breakdown(
+        corrector, non_word, check_real_words=False, top=12
+    )
+    for (gold, typed, got), n in nw_residuals.most_common():
         print(f"  {n:>3}  {gold:<14} {typed:<14} -> {got}")
 
     print("\nMost common residual real-word errors  (gold | typed | predicted)")
-    for (gold, typed, got), n in error_breakdown(
-            corrector, real_word, check_real_words=True, top=12).most_common():
+    rw_residuals = error_breakdown(
+        corrector, real_word, check_real_words=True, top=12
+    )
+    for (gold, typed, got), n in rw_residuals.most_common():
         print(f"  {n:>3}  {gold:<14} {typed:<14} -> {got}")
+
+    results["residual_errors"] = {
+        "non_word": [
+            {"gold": g, "typed": t, "predicted": p, "count": n}
+            for (g, t, p), n in nw_residuals.most_common()
+        ],
+        "real_word": [
+            {"gold": g, "typed": t, "predicted": p, "count": n}
+            for (g, t, p), n in rw_residuals.most_common()
+        ],
+    }
 
     results["config"] = {
         "threshold": args.threshold, "method": args.method,
@@ -440,13 +455,17 @@ Method B is the only sensible choice.
 # Part 5 - output examples
 # --------------------------------------------------------------------------- #
 
-DEMO_SENTENCES = [
-    # -- the four sentences from the brief --------------------------------- #
+DEMO_PATH = RESULTS_DIR / "demo_outputs.json"
+
+# The four sentences from the assignment brief (Part 5 examples).
+BRIEF_SENTENCES = [
     "I hav a good feeling about this.",
     "This is a test sentnce.",
     "I would like to sea the world.",
     "Please meat me at the station.",
-    # -- a few of our own --------------------------------------------------- #
+]
+
+OWN_DEMO_SENTENCES = [
     "She is a very god student in the class.",
     "The govenment anounced a new policey yesterday.",
     "He wants to by a peace of cake.",
@@ -455,22 +474,60 @@ DEMO_SENTENCES = [
     "The whether was terrible during the hole trip.",
 ]
 
+DEMO_SENTENCES = BRIEF_SENTENCES + OWN_DEMO_SENTENCES
+
+
+def _run_demo_sentence(corrector: SpellingCorrector, text: str) -> dict:
+    t0 = time.perf_counter()
+    corrected, changes, _ = corrector.correct_text(text)
+    latency = (time.perf_counter() - t0) * 1000
+    return {
+        "input": text,
+        "output": corrected,
+        "latency_ms": round(latency, 3),
+        "changes": [
+            {
+                "kind": c.kind,
+                "original": c.original,
+                "corrected": c.corrected,
+                "score_gain": (
+                    round(c.score_gain, 3) if c.kind == "real-word" else None
+                ),
+            }
+            for c in changes
+        ],
+    }
+
 
 def cmd_demo(args: argparse.Namespace) -> None:
     """Run the sample sentences non-interactively, so they can be captured."""
     _, corrector = load_models(real_word_threshold=args.threshold)
+    records = []
     for text in DEMO_SENTENCES:
-        t0 = time.perf_counter()
-        corrected, changes, _ = corrector.correct_text(text)
-        latency = (time.perf_counter() - t0) * 1000
-        print(f"  in  : {text}")
-        print(f"  out : {corrected}")
-        for c in changes:
-            gain = f"  (+{c.score_gain:.2f} nats)" if c.kind == "real-word" else ""
-            print(f"        [{c.kind}] {c.original} -> {c.corrected}{gain}")
-        if not changes:
+        rec = _run_demo_sentence(corrector, text)
+        records.append(rec)
+        print(f"  in  : {rec['input']}")
+        print(f"  out : {rec['output']}")
+        for c in rec["changes"]:
+            gain = (
+                f"  (+{c['score_gain']:.2f} nats)"
+                if c["kind"] == "real-word" and c["score_gain"] is not None
+                else ""
+            )
+            print(f"        [{c['kind']}] {c['original']} -> {c['corrected']}{gain}")
+        if not rec["changes"]:
             print("        [no changes]")
-        print(f"        latency {latency:.2f} ms\n")
+        print(f"        latency {rec['latency_ms']:.2f} ms\n")
+
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "threshold": args.threshold,
+        "brief_sentences": records[: len(BRIEF_SENTENCES)],
+        "own_sentences": records[len(BRIEF_SENTENCES) :],
+        "all": records,
+    }
+    DEMO_PATH.write_text(json.dumps(payload, indent=2))
+    print(f"Saved -> {DEMO_PATH}")
 
 
 # --------------------------------------------------------------------------- #

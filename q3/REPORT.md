@@ -225,6 +225,9 @@ available as constructor arguments.
 
 ### The residual errors are systematic, not random
 
+Top residual confusions from `results/results.json` → `evaluation.residual_errors`
+(real-word path):
+
 | gold | typed | predicted | count |
 |---|---|---|---|
 | the | he | he | 31 |
@@ -245,20 +248,21 @@ either a trigram/neural LM or explicit morphological features.
 ### "Speed Demon" benchmark
 
 One identical batch of **exactly 1,000** non-word misspellings (mean length 5.83),
-best of 3 runs, non-word path only:
+best of 3 runs, non-word path only. Numbers from `results/results.json` on this
+machine (exact × varies slightly by hardware; the structural conclusion does not):
 
 | method | total | per word | words/sec | candidates |
 |---|---|---|---|---|
-| Method A — edit-distance-1 | 0.0504 s | 0.0504 ms | 19,860 | 3,166 |
-| **Method B — SymSpell + verify** | **0.0037 s** | **0.0037 ms** | **269,474** | 3,166 |
-| Method B — SymSpell, raw buckets | 0.0016 s | 0.0016 ms | 619,662 | 6,461 |
+| Method A — edit-distance-1 | 0.0618 s | 0.0618 ms | 16,174 | 3,166 |
+| **Method B — SymSpell + verify** | **0.0067 s** | **0.0067 ms** | **148,603** | 3,166 |
+| Method B — SymSpell, raw buckets | 0.0025 s | 0.0025 ms | 394,496 | 6,461 |
 
-Preprocessing: Method A 0 ms, Method B 142 ms.
+Preprocessing: Method A ~0 ms, Method B ~248 ms.
 Output equivalence: **0 disagreements on 1,000 words.**
 
 #### Conclusion — why Method B achieves its runtime
 
-Method B is **13.6× faster per word**, and the reason is structural rather than a
+Method B is **~9.2× faster per word**, and the reason is structural rather than a
 constant-factor implementation win.
 
 Method A's cost is tied to the **size of the alphabet**. Every lookup materialises
@@ -272,18 +276,17 @@ needs each word plus its *n* deletions. At query time **the alphabet has vanishe
 from the complexity**: only the n+1 probe strings are built — **6,827 for the whole
 batch, 51.6× fewer** — so a lookup is O(n) hash probes instead of O(n|A|). That is
 the entire trick: the alphabet factor is paid once at build time instead of on
-every lookup. The measured 13.6× is smaller than the 51.6× reduction in strings
+every lookup. The measured ~9× is smaller than the 51.6× reduction in strings
 built, because Method B's remaining time is dominated by the verification pass and
 the set operations rather than by string construction.
 
-Verification is worth its cost. Raw bucket lookup is 31.2× faster than Method A;
-adding the exact edit-distance check brings that to 13.6× — and buys correctness,
+Verification is worth its cost. Raw bucket lookup is ~24× faster than Method A;
+adding the exact edit-distance check brings that to ~9× — and buys correctness,
 since the raw buckets return 6,461 candidates against the true 3,166, a **2.04×
 over-generation** that would otherwise feed junk to the unigram ranker.
 
-The trade is memory and start-up time for query latency. The 142 ms index build
-pays for itself after ≈ **3,040 lookups** — about eight sentences of continuous
-typing. For a one-shot correction Method A is fine; for anything interactive or
+The trade is memory and start-up time for query latency. The ~248 ms index build
+pays for itself after ≈ **4,500 lookups**. For a one-shot correction Method A is fine; for anything interactive or
 batched, Method B is the only sensible choice.
 
 ---
@@ -297,22 +300,27 @@ real-word fixes, the log-probability margin that justified it. `:realword`,
 `:method` and `:threshold` change behaviour without restarting, which is how most
 of the tuning above was explored.
 
-Measured latency is **~0.4 ms per sentence** — three orders of magnitude below the
+Measured latency is **~0.4–1.5 ms per sentence** — three orders of magnitude below the
 threshold of noticeability, which is a direct consequence of the Method B index.
+
+Non-interactive captures of the brief’s four sentences and additional demos are
+saved in `results/demo_outputs.json` (`python main.py demo`).
 
 ```
 you > This is a test sentnce.
 fix > This is a test sentence.
       non-word   sentnce -> sentence
-      latency 0.24 ms
+      latency 0.32 ms
 
 you > I would like to sea the world.
 fix > I would like to see the world.
       real-word  sea -> see (+7.25 nats)
-      latency 0.45 ms
+      latency 0.59 ms
 ```
 
 ### The brief's four test sentences
+
+Archived in `results/demo_outputs.json` → `brief_sentences`:
 
 | input | output | verdict |
 |---|---|---|
@@ -321,7 +329,7 @@ fix > I would like to see the world.
 | I would like to **sea** the world. | I would like to **see** the world. | correct |
 | Please **meat** me at the station. | Please **beat** me at the station. | wrong |
 
-And ten of our own (`python main.py demo`):
+And ten of our own (`python main.py demo` → `own_sentences`):
 
 ```
 The govenment anounced a new policey yesterday.
@@ -388,14 +396,39 @@ He wants to by a peace of cake.
 | Non-word accuracy | **91.96 %** (0 % of cases left uncorrected) |
 | Real-word accuracy | **61.37 %**, against a 0 % floor without context |
 | Real-word false-alarm rate | 1.96 % of words at the default threshold |
-| Method B speed-up | **13.6×** per word, identical output, 142 ms one-off index |
-| Interactive latency | ~0.4 ms per sentence |
+| Method B speed-up | **~9.2×** per word (this machine), identical output, ~248 ms one-off index |
+| Interactive latency | ~0.4–1.5 ms per sentence |
 | Tests | 49 passing, including randomised A ≡ B equivalence |
 
-The two headline results are that **SymSpell buys an order of magnitude of latency
-for free** — the candidate sets are provably identical, so the only cost is 142 ms
+The two headline results are that **SymSpell buys roughly an order of magnitude of latency
+for free** — the candidate sets are provably identical, so the only cost is ~250 ms
 and some memory at start-up — and that **real-word correction is a genuine
 trade-off rather than a strict improvement**: it lifts real-word accuracy from 0 %
 to 61 % but rewrites ~2 % of already-correct words, and that cost is only visible
 if you measure sentence-level accuracy and false alarms alongside the headline
 number.
+
+## Submission checklist (PDF marking scheme)
+
+| Part | Marks | Evidence |
+|------|------:|----------|
+| 1 Vocabulary + unigram | 3 | `spelling/language_model.py`, `python main.py train` |
+| 1 Bigram LM | 3 | add-k bigram in same module; trained pickle `artifacts/brown_lm.pkl` |
+| 2 Method A | 5 | `EditDistance1Generator` in `spelling/candidates.py` |
+| 2 Method B (+ preprocess) | 5 | `SymmetricDeleteIndex` in `spelling/candidates.py` |
+| 3 Non-word correction | 4 | `SpellingCorrector.correct_non_word` (unigram rank) |
+| 3 Real-word correction | 4 | bigram context + threshold 5.0 in `corrector.py` |
+| 4 Test sets + accuracy | 4 | `python main.py eval --full` → `results/results.json` |
+| 4 Speed Demon + conclusion | 4 | `python main.py bench` + §4 conclusion above |
+| 5 Interactive Terminal CLI | 8 | `python main.py app` (highlight, latency, `exit`); samples in `results/demo_outputs.json` |
+
+Reproduce:
+
+```bash
+cd q3
+python main.py eval --full
+python main.py bench
+python main.py demo
+python main.py app
+python -m pytest -q
+```
